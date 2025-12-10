@@ -1,4 +1,3 @@
-````markdown
 # Upgrade 01 – Add Citations & Provenance
 
 This upgrade adds **source tracking** to the Chitown Custom Choppers RAG bot:
