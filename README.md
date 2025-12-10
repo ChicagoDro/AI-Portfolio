@@ -40,7 +40,7 @@ Whether you're learning AI, exploring data engineering, or building cloud-native
 
 ---
 
-## 📫 Let’s Connect
+## Let’s Connect
 **Email:** pete@tamisin.com
 **LinkedIn:** [https://www.linkedin.com/in/peter-tamisin-50a3233a/](https://www.linkedin.com/in/peter-tamisin-50a3233a/)  
 **Location:** Chicago, IL  
