@@ -2,7 +2,7 @@
   "documents": [
     {
       "file_name": "HR_Employee_Handbook.pdf",
-      "file_path": "~/Projects/RAG-Capstone/Company-Data/HR_Employee_Handbook.pdf",
+      "file_path": "~/Projects/AI-Portfolio/data/Chitown_Custom_Choppers/HR_Employee_Handbook.pdf",
       "document_type": "HR Policy",
       "category": "Internal",
       "description": "Official policy document covering PTO, dress code, employee discounts, and disciplinary procedures for staff.",
@@ -10,7 +10,7 @@
     },
     {
       "file_name": "Customer_Return_Policy.pdf",
-      "file_path": "~/Projects/RAG-Capstone/Company-Data/Customer_Return_Policy.pdf",
+      "file_path": "~/Projects/AI-Portfolio/data/Chitown_Custom_Choppers/Customer_Return_Policy.pdf",
       "document_type": "Customer Policy",
       "category": "External",
       "description": "Guidelines for customer returns and exchanges, including time limits (30/45 days) and conditions for specific items like pottery and books.",
@@ -18,7 +18,7 @@
     },
     {
       "file_name": "Q3_2024_Sales_Summary.pdf",
-      "file_path": "~/Projects/RAG-Capstone/Company-Data/Q3_2024_Sales_Summary.pdf",
+      "file_path": "~/Projects/AI-Portfolio/data/Chitown_Custom_Choppers/Q3_2024_Sales_Summary.pdf",
       "document_type": "Financial Data",
       "category": "Internal",
       "description": "Quarterly summary of store performance, including total revenue, best-selling categories, and staffing notes.",
@@ -26,7 +26,7 @@
     },
     {
       "file_name": "Store_Operations_Guide.pdf",
-      "file_path": "~/Projects/RAG-Capstone/Company-Data/Store_Operations_Guide.pdf",
+      "file_path": "~/Projects/AI-Portfolio/data/Chitown_Custom_Choppers/Store_Operations_Guide.pdf",
       "document_type": "Operations Manual",
       "category": "Internal",
       "description": "Details on key suppliers (Schwinn Bike Parts), equipment, store cleaning, and manager contact information.",
@@ -34,7 +34,7 @@
     },
     {
       "file_name": "Customer_FAQ.pdf",
-      "file_path": "~/Projects/RAG-Capstone/Company-Data/Customer_FAQ.pdf",
+      "file_path": "~/Projects/AI-Portfolio/data/Chitown_Custom_Choppers/Customer_FAQ.pdf",
       "document_type": "Customer Service",
       "category": "External",
       "description": "Answers to common customer questions about gift shipping, events, repairs, and accepted payment methods.",
@@ -42,7 +42,7 @@
     },
     {
       "file_name": "Winter_Warmer_Promotion.pdf",
-      "file_path": "~/Projects/RAG-Capstone/Company-Data/Winter_Warmer_Promotion.pdf",
+      "file_path": "~/Projects/AI-Portfolio/data/Chitown_Custom_Choppers/Winter_Warmer_Promotion.pdf",
       "document_type": "Marketing",
       "category": "External",
       "description": "Announcement for the seasonal sales event, including 20% off items, the Spiced Maple Latte special, and the $75 purchase gift offer.",

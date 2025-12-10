@@ -21,11 +21,22 @@ from langchain_openai import OpenAIEmbeddings
 
 
 # ----------------------------- CONFIG ------------------------------------------------
-METADATA_FILE_PATH = Path("document-metadata.json")
-INDEX_DIR = "faiss_chitowncustomchoppers_index"
+# ----------------------------- PATH CONFIG ------------------------------------------------
 
-# Optional: base directory if you want to shorten JSON paths later
-BASE_DATA_DIR = Path("~/Projects/RAG-Capstone/Company-Data").expanduser()
+# Dynamically resolve repo root
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+
+# Input metadata describing PDFs
+METADATA_FILE_PATH = PROJECT_ROOT / "data" / "document-metadata.json"
+
+# Directory that stores PDF files
+DATA_DIR = PROJECT_ROOT / "data" / "Chitown_Custom_Choppers"
+
+# Directory where FAISS index is saved/loaded
+INDEX_DIR = PROJECT_ROOT / "indices" / "faiss_chitowncustomchoppers_index"
+
+# Create dir if needed
+INDEX_DIR.mkdir(parents=True, exist_ok=True)
 
 
 # ----------------------------- HELPERS ----------------------------------------------

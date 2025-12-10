@@ -1,5 +1,6 @@
 import os
 from typing import Dict, Any, List
+from pathlib import Path
 
 from dotenv import load_dotenv
 import streamlit as st
@@ -19,7 +20,8 @@ from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 # ------------------------------------------------------------------------------------
 # CONFIG
 # ------------------------------------------------------------------------------------
-INDEX_DIR = "faiss_chitown_custom_choppers_index"
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+INDEX_DIR = PROJECT_ROOT / "indices" / "faiss_chitowncustomchoppers_index"
 
 # To avoid potential issues on some systems (e.g., Mac M1/M2)
 os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
