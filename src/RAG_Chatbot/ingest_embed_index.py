@@ -69,7 +69,9 @@ def load_documents_with_metadata(metadata_entries: List[Dict[str, Any]]) -> List
             print(f"Skipping entry with missing file_path: {meta}")
             continue
 
-        full_path = Path(file_path).expanduser()
+        # e.g. "data/Chitown_Custom_Choppers/HR_Employee_Handbook.pdf"
+        full_path = PROJECT_ROOT / file_path
+
         if not full_path.exists():
             print(f"WARNING: File not found: {full_path} (from {file_name})")
             continue

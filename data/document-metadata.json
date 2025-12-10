@@ -2,51 +2,215 @@
   "documents": [
     {
       "file_name": "HR_Employee_Handbook.pdf",
-      "file_path": "~/Projects/AI-Portfolio/data/Chitown_Custom_Choppers/HR_Employee_Handbook.pdf",
+      "file_path": "data/Chitown_Custom_Choppers/HR_Employee_Handbook.pdf",
       "document_type": "HR Policy",
       "category": "Internal",
-      "description": "Official policy document covering PTO, dress code, employee discounts, and disciplinary procedures for staff.",
+      "description": "Policies covering PTO, conduct, dress code, safety expectations, employee discounts, and disciplinary procedures.",
       "sensitivity": "High"
     },
     {
+      "file_name": "HR_Onboarding_Packet.pdf",
+      "file_path": "data/Chitown_Custom_Choppers/HR_Onboarding_Packet.pdf",
+      "document_type": "HR Policy",
+      "category": "Internal",
+      "description": "First-week expectations, welcome letter, required HR forms, and safety introduction for new employees.",
+      "sensitivity": "High"
+    },
+    {
+      "file_name": "HR_Benefits_Guide.pdf",
+      "file_path": "data/Chitown_Custom_Choppers/HR_Benefits_Guide.pdf",
+      "document_type": "HR Policy",
+      "category": "Internal",
+      "description": "Overview of employee benefits including healthcare, PTO accrual, retirement options, and shop discounts.",
+      "sensitivity": "High"
+    },
+    {
+      "file_name": "HR_Safety_Procedures.pdf",
+      "file_path": "data/Chitown_Custom_Choppers/HR_Safety_Procedures.pdf",
+      "document_type": "HR Policy",
+      "category": "Internal",
+      "description": "Safety rules for working in the shop including PPE, emergency steps, and equipment handling procedures.",
+      "sensitivity": "High"
+    },
+    {
+      "file_name": "HR_Job_Descriptions.pdf",
+      "file_path": "data/Chitown_Custom_Choppers/HR_Job_Descriptions.pdf",
+      "document_type": "HR Policy",
+      "category": "Internal",
+      "description": "Detailed job roles and responsibilities for mechanics, frame builders, customer service, and sales roles.",
+      "sensitivity": "Medium"
+    },
+
+    {
       "file_name": "Customer_Return_Policy.pdf",
-      "file_path": "~/Projects/AI-Portfolio/data/Chitown_Custom_Choppers/Customer_Return_Policy.pdf",
+      "file_path": "data/Chitown_Custom_Choppers/Customer_Return_Policy.pdf",
       "document_type": "Customer Policy",
       "category": "External",
-      "description": "Guidelines for customer returns and exchanges, including time limits (30/45 days) and conditions for specific items like pottery and books.",
+      "description": "30-day return policy covering conditions, exceptions for custom builds, and refund procedure.",
       "sensitivity": "Low"
     },
     {
-      "file_name": "Q3_2024_Sales_Summary.pdf",
-      "file_path": "~/Projects/AI-Portfolio/data/Chitown_Custom_Choppers/Q3_2024_Sales_Summary.pdf",
-      "document_type": "Financial Data",
-      "category": "Internal",
-      "description": "Quarterly summary of store performance, including total revenue, best-selling categories, and staffing notes.",
-      "sensitivity": "Medium"
+      "file_name": "Customer_Warranty_Policy.pdf",
+      "file_path": "data/Chitown_Custom_Choppers/Customer_Warranty_Policy.pdf",
+      "document_type": "Customer Policy",
+      "category": "External",
+      "description": "One-year limited warranty information including coverage, exclusions, and claim submission steps.",
+      "sensitivity": "Low"
     },
     {
-      "file_name": "Store_Operations_Guide.pdf",
-      "file_path": "~/Projects/AI-Portfolio/data/Chitown_Custom_Choppers/Store_Operations_Guide.pdf",
-      "document_type": "Operations Manual",
-      "category": "Internal",
-      "description": "Details on key suppliers (Schwinn Bike Parts), equipment, store cleaning, and manager contact information.",
-      "sensitivity": "Medium"
-    },
-    {
-      "file_name": "Customer_FAQ.pdf",
-      "file_path": "~/Projects/AI-Portfolio/data/Chitown_Custom_Choppers/Customer_FAQ.pdf",
+      "file_name": "Customer_Repair_Policy.pdf",
+      "file_path": "data/Chitown_Custom_Choppers/Customer_Repair_Policy.pdf",
       "document_type": "Customer Service",
       "category": "External",
-      "description": "Answers to common customer questions about gift shipping, events, repairs, and accepted payment methods.",
+      "description": "Repair intake steps, timeline expectations, pricing tiers, rush fees, and service guarantees.",
       "sensitivity": "Low"
     },
     {
-      "file_name": "Winter_Warmer_Promotion.pdf",
-      "file_path": "~/Projects/AI-Portfolio/data/Chitown_Custom_Choppers/Winter_Warmer_Promotion.pdf",
+      "file_name": "Customer_Shipping_Policy.pdf",
+      "file_path": "data/Chitown_Custom_Choppers/Customer_Shipping_Policy.pdf",
+      "document_type": "Customer Policy",
+      "category": "External",
+      "description": "Shipping methods, costs, damaged-package procedure, and tracking information.",
+      "sensitivity": "Low"
+    },
+    {
+      "file_name": "Customer_Privacy_Policy.pdf",
+      "file_path": "data/Chitown_Custom_Choppers/Customer_Privacy_Policy.pdf",
+      "document_type": "Customer Policy",
+      "category": "External",
+      "description": "Personal data handling policy describing what information is collected, how it is used, and customer rights.",
+      "sensitivity": "Medium"
+    },
+
+    {
+      "file_name": "Product_Frame_Guide.pdf",
+      "file_path": "data/Chitown_Custom_Choppers/Product_Frame_Guide.pdf",
+      "document_type": "Operations Manual",
+      "category": "Internal",
+      "description": "Descriptions of chopper frame types, materials, geometry, strengths, and recommended use cases.",
+      "sensitivity": "Medium"
+    },
+    {
+      "file_name": "Product_Wheel_Tire_Guide.pdf",
+      "file_path": "data/Chitown_Custom_Choppers/Product_Wheel_Tire_Guide.pdf",
+      "document_type": "Operations Manual",
+      "category": "Internal",
+      "description": "Wheel and tire sizing chart, PSI ranges, rim compatibility guide, and recommended combinations.",
+      "sensitivity": "Medium"
+    },
+    {
+      "file_name": "Product_Brake_System_Manual.pdf",
+      "file_path": "data/Chitown_Custom_Choppers/Product_Brake_System_Manual.pdf",
+      "document_type": "Operations Manual",
+      "category": "Internal",
+      "description": "Brake setup guide including disc vs rim brakes, adjustment procedures, and troubleshooting steps.",
+      "sensitivity": "Medium"
+    },
+    {
+      "file_name": "Product_Gear_Shifter_Manual.pdf",
+      "file_path": "data/Chitown_Custom_Choppers/Product_Gear_Shifter_Manual.pdf",
+      "document_type": "Operations Manual",
+      "category": "Internal",
+      "description": "Gear shifter installation, calibration, cable tensioning, and maintenance guidelines.",
+      "sensitivity": "Medium"
+    },
+    {
+      "file_name": "Product_Measuring_Guide.pdf",
+      "file_path": "data/Chitown_Custom_Choppers/Product_Measuring_Guide.pdf",
+      "document_type": "Operations Manual",
+      "category": "Internal",
+      "description": "Instructions for measuring rider height, inseam, frame sizing, and crank length.",
+      "sensitivity": "Low"
+    },
+    {
+      "file_name": "Product_Paint_Finish_Catalog.pdf",
+      "file_path": "data/Chitown_Custom_Choppers/Product_Paint_Finish_Catalog.pdf",
       "document_type": "Marketing",
       "category": "External",
-      "description": "Announcement for the seasonal sales event, including 20% off items, the Spiced Maple Latte special, and the $75 purchase gift offer.",
+      "description": "Catalog of paint colors, finish options, powder coatings, and color codes for custom builds.",
       "sensitivity": "Low"
+    },
+    {
+      "file_name": "Product_Customization_Options.pdf",
+      "file_path": "data/Chitown_Custom_Choppers/Product_Customization_Options.pdf",
+      "document_type": "Customer Service",
+      "category": "External",
+      "description": "Customization options including handlebars, forks, wheels, grips, seats, and accessories.",
+      "sensitivity": "Low"
+    },
+    {
+      "file_name": "Product_Parts_Catalog.pdf",
+      "file_path": "data/Chitown_Custom_Choppers/Product_Parts_Catalog.pdf",
+      "document_type": "Operations Manual",
+      "category": "Internal",
+      "description": "Catalog of part numbers, compatibility notes, supplier references, and detailed component descriptions.",
+      "sensitivity": "Medium"
+    },
+
+    {
+      "file_name": "Finance_Monthly_Sales_Report.pdf",
+      "file_path": "data/Chitown_Custom_Choppers/Finance_Monthly_Sales_Report.pdf",
+      "document_type": "Financial Data",
+      "category": "Internal",
+      "description": "Monthly revenue summary, best sellers, seasonal sales patterns, and staff notes.",
+      "sensitivity": "High"
+    },
+    {
+      "file_name": "Finance_Quarterly_Inventory_Report.pdf",
+      "file_path": "data/Chitown_Custom_Choppers/Finance_Quarterly_Inventory_Report.pdf",
+      "document_type": "Financial Data",
+      "category": "Internal",
+      "description": "Quarterly inventory levels, reorder suggestions, supplier delays, and shrinkage analysis.",
+      "sensitivity": "High"
+    },
+    {
+      "file_name": "Finance_Supplier_Contracts.pdf",
+      "file_path": "data/Chitown_Custom_Choppers/Finance_Supplier_Contracts.pdf",
+      "document_type": "Financial Data",
+      "category": "Internal",
+      "description": "Supplier contracts including Schwinn Parts Co. pricing agreements, delivery schedules, and negotiated terms.",
+      "sensitivity": "High"
+    },
+    {
+      "file_name": "Finance_Operations_Budget.pdf",
+      "file_path": "data/Chitown_Custom_Choppers/Finance_Operations_Budget.pdf",
+      "document_type": "Financial Data",
+      "category": "Internal",
+      "description": "Annual budget overview including expenses, staffing costs, maintenance, and tooling investments.",
+      "sensitivity": "High"
+    },
+
+    {
+      "file_name": "Marketing_Holiday_Promo.pdf",
+      "file_path": "data/Chitown_Custom_Choppers/Marketing_Holiday_Promo.pdf",
+      "document_type": "Marketing",
+      "category": "External",
+      "description": "Holiday promotion flyer offering discounts, event details, and purchase incentives.",
+      "sensitivity": "Low"
+    },
+    {
+      "file_name": "Marketing_Event_Flyer.pdf",
+      "file_path": "data/Chitown_Custom_Choppers/Marketing_Event_Flyer.pdf",
+      "document_type": "Marketing",
+      "category": "External",
+      "description": "Community ride event flyer including schedule, raffle prizes, and BBQ information.",
+      "sensitivity": "Low"
+    },
+    {
+      "file_name": "Marketing_Custom_Build_Showcase.pdf",
+      "file_path": "data/Chitown_Custom_Choppers/Marketing_Custom_Build_Showcase.pdf",
+      "document_type": "Marketing",
+      "category": "External",
+      "description": "Showcase of custom chopper builds with images, descriptions, builder notes, and creative highlights.",
+      "sensitivity": "Low"
+    },
+    {
+      "file_name": "Marketing_Social_Media_Strategy.pdf",
+      "file_path": "data/Chitown_Custom_Choppers/Marketing_Social_Media_Strategy.pdf",
+      "document_type": "Marketing",
+      "category": "Internal",
+      "description": "Social media posting schedule, brand voice guidelines, and content strategy.",
+      "sensitivity": "Medium"
     }
   ]
 }
