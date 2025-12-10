@@ -1,5 +1,5 @@
 
-# ☕ Chi-Town Custom Choppers RAG Capstone  
+# Chi-Town Custom Choppers RAG Capstone  
 ### *A Progressive Learning Repository for Building Real-World GenAI Retrieval Systems*
 
 Welcome!  
@@ -11,13 +11,13 @@ This repository is intentionally structured as **both**:
 It is designed for employers, collaborators, and learners who want to see:
 
 - Clean, well-designed GenAI systems  
-- Real retrieval architectures you’d build at Anthropic, Hugging Face, or OpenAI  
+- Real retrieval architectures you’d build to customize responses from LLMs like ChatGpt or Grok  
 - A documented roadmap showing *how* each capability was added  
 - A portfolio demonstrating deep mastery, not surface-level demos  
 
 ---
 
-# 🎯 Project Purpose
+# Project Purpose
 
 This repository is your personal **GenAI mastery journey**.  
 
@@ -36,7 +36,7 @@ Each step is documented so anyone following your footsteps can learn with you �
 
 ---
 
-# 🧩 Repository Structure
+# Repository Structure
 
 ```text
 RAG-Capstone/
@@ -86,7 +86,7 @@ Shows your research process — something employers value.
 
 ---
 
-# 🛠 Running the Main Application
+# Running the Main Application
 
 After installing dependencies:
 
@@ -105,7 +105,7 @@ The system supports:
 
 ---
 
-# 📚 Learning Roadmap (Progressive)
+# Learning Roadmap (Progressive)
 
 This repository is organized into a learning journey:
 
@@ -148,7 +148,7 @@ You can explore the `upgrades/` directory to see the progression from novice →
 
 ---
 
-# 👨‍🏫 For Learners
+# For Learners
 
 Each upgrade folder is a **mini-course**.
 You can follow along step by step to learn:
@@ -163,7 +163,7 @@ This repository is designed to be forked and extended.
 
 ---
 
-# 🚀 Future Goals
+# Future Goals
 
 This repository will continue to evolve into:
 
@@ -175,7 +175,7 @@ This repository will continue to evolve into:
 
 ---
 
-# ❤️ Closing
+# Closing
 
 This project is both:
 
