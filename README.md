@@ -1,7 +1,7 @@
 #  Hi, I’m **Pete Tamisin**
-### **Director of Solutions & Data Strategy • AI & Data Engineering Architect • Builder & Teacher**
+### **Technical GTM Leader • AI & Data Engineering Architect • Builder & Teacher**
 
-I’m a Director-level technical leader with 20+ years of experience designing **modern data platforms**, driving **enterprise AI adoption**, and scaling high-growth products. My work bridges the worlds of **architecture**, **customer success**, and **business strategy** to deliver real-world impact across Fortune 500 enterprises and fast-moving startups.  
+I’m a Director-level technical leader with 20+ years of experience designing **modern data platforms**, driving **enterprise AI adoption**, and scaling high-growth products. My work bridges the worlds of **architecture**, **customer success**, and **business strategy** to deliver real-world impact across Fortune 500 enterprises and fast-moving startups. (current Capital One, ex-Databricks, ex-consultant, ex-Siemens, ex-Motorola, 2 Series A startups with successful exits)  
 
 ---
 
@@ -18,7 +18,7 @@ I’m a Director-level technical leader with 20+ years of experience designing *
 - High-energy teaching and technical enablement (45+ presenters trained for major events)  
 - Leading every closed enterprise deal at Sync Computing as the SA on 100% of contracts  
 - Supporting executive teams through acquisition diligence and growth strategy  
-- Delivering millions in customer savings and uncovering critical product edge cases
+- Delivering millions in customer ROI and uncovering critical product edge cases
 
 ---
 
