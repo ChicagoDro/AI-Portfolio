@@ -11,6 +11,9 @@ autom4te.cache/
 tarballs/
 test-results/
 
+# Sensitive files
+*.env
+
 # Mac bundle stuff
 *.dmg
 *.app
