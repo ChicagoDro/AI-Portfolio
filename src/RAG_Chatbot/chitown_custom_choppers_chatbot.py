@@ -254,7 +254,7 @@ def setup_rag_chain():
 
 def main():
     st.set_page_config(page_title="Chi-Town Custom Choppers Chatbot", page_icon="☕")
-    st.title("☕ Chi-Town Custom Choppers Knowledge Assistant")
+    st.title("Chi-Town Custom Choppers Knowledge Assistant")
 
     try:
         rag_chain = setup_rag_chain()
