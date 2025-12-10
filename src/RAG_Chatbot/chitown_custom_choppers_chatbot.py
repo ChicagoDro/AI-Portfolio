@@ -14,19 +14,19 @@ from langchain_core.output_parsers import StrOutputParser, JsonOutputParser
 
 from pydantic import BaseModel, Field
 
-# --- Vector Store & Embeddings ---
+# --- Vector Store & LLM ---
 from langchain_community.vectorstores import FAISS
+from langchain_community.retrievers import BM25Retriever
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 
 load_dotenv()
 
-# ----------------------------- CONFIG ---------------------------------------------
+# ----------------------------- CONFIG ------------------------------------------------
 
-# Directory where the FAISS index was saved by ingest_embed_index.py
-# Dynamically resolve repo root
+# Script lives at: src/RAG_Chatbot/chitown_custom_choppers_chatbot.py
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
-# Directory where FAISS index is saved/loaded
+# Directory where FAISS index was saved by ingest_embed_index.py
 INDEX_DIR = PROJECT_ROOT / "indices" / "faiss_chitowncustomchoppers_index"
 
 
@@ -37,7 +37,7 @@ def get_llm():
     """
     Return a ChatOpenAI LLM configured for either:
       - OpenAI (default)
-      - Grok (OpenAI-compatible endpoint, if you configure it)
+      - Grok (OpenAI-compatible endpoint, if configured).
     Controlled via env var: LLM_PROVIDER in {"openai", "grok"}.
     """
     provider = os.getenv("LLM_PROVIDER", "openai").lower()
@@ -70,16 +70,16 @@ class DocumentCategory(BaseModel):
     category: str = Field(
         description=(
             "The most relevant document_type category for answering this query. "
-            "Must be one of: 'HR Policy', 'Customer Policy', 'Customer Service', "
+            "Must be one of: 'HR Policy', 'Financial Data', 'HR/Org Structure, 'Customer Policy', 'Customer Service', "
             "'Operations Manual', 'Marketing', or 'Other'."
         )
     )
 
 
-# ----------------------------- RAG CHAIN SETUP -----------------------------------
+# ----------------------------- RAG CHAIN SETUP (HYBRID) --------------------------
 
 
-@st.cache_resource(show_spinner="Loading vector index and LLM…")
+@st.cache_resource(show_spinner="Loading vector index, BM25, and LLM…")
 def setup_rag_chain():
     # 1. Load vector store with OpenAI embeddings
     openai_api_key = os.getenv("OPENAI_API_KEY")
@@ -92,17 +92,29 @@ def setup_rag_chain():
         model=os.getenv("EMBEDDING_MODEL", "text-embedding-3-small")
     )
 
-    if not os.path.exists(INDEX_DIR):
+    if not INDEX_DIR.exists():
         raise FileNotFoundError(
             f"Vector index directory '{INDEX_DIR}' not found. "
             f"Run ingest_embed_index.py first."
         )
 
-    loaded_vectorstore = FAISS.load_local(
+    loaded_vectorstore: FAISS = FAISS.load_local(
         INDEX_DIR,
         embedding_model,
-        allow_dangerous_deserialization=True,  # ok for local/dev
+        allow_dangerous_deserialization=True,  # OK for local/dev
     )
+
+    # Build BM25 retriever from the documents stored in the FAISS docstore
+    # (this avoids re-reading PDFs).
+    docstore_dict = getattr(loaded_vectorstore.docstore, "_dict", {})
+    base_docs: List[Document] = list(docstore_dict.values())
+
+    if not base_docs:
+        raise RuntimeError("No documents found in FAISS docstore for BM25 construction.")
+
+    bm25_retriever = BM25Retriever.from_documents(base_docs)
+    # Optionally tweak how many docs BM25 returns
+    bm25_retriever.k = 8
 
     llm = get_llm()
 
@@ -126,6 +138,8 @@ def setup_rag_chain():
                     "  - Customer Service\n"
                     "  - Operations Manual\n"
                     "  - Marketing\n"
+                    "  - Financial Data\n"
+                    "  - HR/Org Structure\n"
                     "  - Other\n\n"
                     "Return ONLY a JSON object following these instructions:\n"
                     "{format_instructions}"
@@ -143,13 +157,15 @@ def setup_rag_chain():
         "Customer Policy",
         "Customer Service",
         "Operations Manual",
+        "Financial Data",
+        "HR/Org Structure",
         "Marketing",
     }
 
     # ---------------- Helper: build filter from classification ----------------
 
     def build_metadata_filter(classifier_output: Any) -> Dict[str, Any] | None:
-        """Convert classifier output into a FAISS metadata filter."""
+        """Convert classifier output into a FAISS/BM25 metadata filter."""
         if isinstance(classifier_output, DocumentCategory):
             category = classifier_output.category
         elif isinstance(classifier_output, dict):
@@ -166,56 +182,170 @@ def setup_rag_chain():
             print("[DEBUG] Unknown or missing category; using unfiltered search.")
             return None
 
-    # ---------------- Helper: retrieve docs with scores + build context --------
+    # ---------------- Helper: filter docs by metadata -------------------------
 
-    def retrieve_with_scores(inputs: Dict[str, Any]) -> Dict[str, Any]:
+    def matches_filter(doc: Document, metadata_filter: Dict[str, Any] | None) -> bool:
+        if not metadata_filter:
+            return True
+        for k, v in metadata_filter.items():
+            if doc.metadata.get(k) != v:
+                return False
+        return True
+
+    # ---------------- Helper: HYBRID RETRIEVAL (FAISS + BM25) -----------------
+
+    def hybrid_retrieve_with_scores(inputs: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Upgraded retrieval step:
-        - Uses similarity_search_with_score (so we keep scores)
-        - Applies optional metadata filter from classification
+        Hybrid retrieval step:
+        - Dense retrieval via FAISS similarity_search_with_score.
+        - Sparse retrieval via BM25Retriever.
+        - Metadata filter applied to both channels.
+        - Scores normalized and combined into a hybrid score.
         - Returns:
             - query
-            - context (string to feed to LLM)
-            - sources (list of provenance dicts for UI)
+            - context (string for LLM)
+            - sources (rich provenance, including dense/sparse/hybrid scores).
         """
         query = inputs["query"]
         classification = inputs["classification"]
 
         metadata_filter = build_metadata_filter(classification)
 
-        search_kwargs: Dict[str, Any] = {"k": 3}
+        # --- Dense retrieval (FAISS) ---
+        dense_kwargs: Dict[str, Any] = {"k": 5}
         if metadata_filter:
-            search_kwargs["filter"] = metadata_filter
+            dense_kwargs["filter"] = metadata_filter
 
-        print(f"[DEBUG] search_kwargs: {search_kwargs}")
-
-        # Directly use similarity_search_with_score to get scores
-        docs_and_scores: List[Tuple[Document, float]] = (
-            loaded_vectorstore.similarity_search_with_score(
-                query, **search_kwargs
-            )
+        dense_docs_and_scores: List[Tuple[Document, float]] = (
+            loaded_vectorstore.similarity_search_with_score(query, **dense_kwargs)
         )
 
         print(
-            f"[DEBUG] Retrieved {len(docs_and_scores)} documents for query '{query}'."
+            f"[DEBUG][DENSE] Retrieved {len(dense_docs_and_scores)} documents for query '{query}'."
         )
 
-        # Build context string + source metadata
+        # --- Sparse retrieval (BM25) ---
+        # BM25Retriever in your setup behaves like a Runnable, so we use .invoke()
+        try:
+            bm25_candidates: List[Document] = bm25_retriever.get_relevant_documents(query)
+        except AttributeError:
+            # Fallback for retrievers implemented as LCEL runnables
+            bm25_candidates: List[Document] = bm25_retriever.invoke(query)
+
+        # Apply metadata filter post-hoc to BM25 results
+        sparse_docs: List[Document] = [
+            d for d in bm25_candidates if matches_filter(d, metadata_filter)
+        ]
+
+
+        print(
+            f"[DEBUG][SPARSE] Retrieved {len(sparse_docs)} BM25 documents before/after filtering."
+        )
+
+        # --- Build lookup maps per doc identity (file_name + page + source) ---
+
+        def doc_key(doc: Document) -> Tuple[Any, Any, Any]:
+            return (
+                doc.metadata.get("file_name"),
+                doc.metadata.get("page"),
+                doc.metadata.get("source"),
+            )
+
+        dense_map: Dict[Tuple[Any, Any, Any], Dict[str, Any]] = {}
+        for doc, distance in dense_docs_and_scores:
+            key = doc_key(doc)
+            dense_map[key] = {
+                "doc": doc,
+                "dense_distance": float(distance),
+            }
+
+        sparse_map: Dict[Tuple[Any, Any, Any], Dict[str, Any]] = {}
+        # Use rank-based pseudo-scores for BM25 (higher rank → smaller score).
+        for rank, doc in enumerate(sparse_docs):
+            key = doc_key(doc)
+            # Simple decreasing score: 1.0, 0.5, 0.33, ...
+            sparse_score = 1.0 / (rank + 1)
+            sparse_map[key] = {
+                "doc": doc,
+                "sparse_score": sparse_score,
+            }
+
+        # --- Combine keys and compute hybrid scores ---------------------------
+
+        all_keys = set(dense_map.keys()) | set(sparse_map.keys())
+        combined: List[Dict[str, Any]] = []
+
+        for key in all_keys:
+            dense_entry = dense_map.get(key)
+            sparse_entry = sparse_map.get(key)
+
+            if dense_entry:
+                dense_distance = dense_entry["dense_distance"]
+                dense_conf = 1.0 / (1.0 + dense_distance)  # lower distance => higher confidence
+            else:
+                dense_distance = None
+                dense_conf = 0.0
+
+            sparse_score = sparse_entry["sparse_score"] if sparse_entry else 0.0
+
+            # Simple normalization: both already ~[0,1]
+            dense_norm = dense_conf
+            sparse_norm = sparse_score
+
+            # Hybrid weighting (you can tune these)
+            alpha = 0.6  # dense
+            beta = 0.4   # sparse
+
+            hybrid_score = alpha * dense_norm + beta * sparse_norm
+
+            # Prefer doc object from dense; fallback to sparse
+            doc = (
+                dense_entry["doc"]
+                if dense_entry is not None
+                else sparse_entry["doc"]
+            )
+
+            combined.append(
+                {
+                    "doc": doc,
+                    "dense_distance": dense_distance,
+                    "dense_conf": dense_conf,
+                    "sparse_score": sparse_score,
+                    "hybrid_score": hybrid_score,
+                }
+            )
+
+        # Sort by hybrid_score descending (higher = better)
+        combined_sorted = sorted(
+            combined, key=lambda x: x["hybrid_score"], reverse=True
+        )
+
+        # Limit final number of chunks
+        top_k_final = 5
+        combined_sorted = combined_sorted[:top_k_final]
+
+        # --- Build context string + source metadata ---------------------------
+
         context_chunks: List[str] = []
         sources: List[Dict[str, Any]] = []
 
-        for i, (doc, score) in enumerate(docs_and_scores):
+        for i, entry in enumerate(combined_sorted):
+            doc = entry["doc"]
             file_name = doc.metadata.get("file_name", "Unknown")
             doc_type = doc.metadata.get("document_type", "Unknown")
             page = doc.metadata.get("page", "Unknown")
-            # FAISS scores are distances; lower = closer. Convert to a confidence-ish score:
-            # quick heuristic: confidence = 1 / (1 + distance)
-            distance = float(score)
-            confidence = 1.0 / (1.0 + distance)
 
+            dense_distance = entry["dense_distance"]
+            dense_conf = entry["dense_conf"]
+            sparse_score = entry["sparse_score"]
+            hybrid_score = entry["hybrid_score"]
+
+            # Human-readable context header
             context_chunks.append(
                 f"[Source {i+1} | {file_name} | type={doc_type} | page={page} | "
-                f"distance={distance:.4f} | conf≈{confidence:.3f}]\n"
+                f"dense_distance={dense_distance if dense_distance is not None else 'NA'} | "
+                f"dense_conf≈{dense_conf:.3f} | sparse≈{sparse_score:.3f} | "
+                f"hybrid≈{hybrid_score:.3f}]\n"
                 f"{doc.page_content}"
             )
 
@@ -225,8 +355,10 @@ def setup_rag_chain():
                     "file_name": file_name,
                     "document_type": doc_type,
                     "page": page,
-                    "distance": distance,
-                    "confidence": confidence,
+                    "dense_distance": dense_distance,
+                    "dense_conf": dense_conf,
+                    "sparse_score": sparse_score,
+                    "hybrid_score": hybrid_score,
                 }
             )
 
@@ -242,7 +374,7 @@ def setup_rag_chain():
             "sources": sources,
         }
 
-    # ---------------- Answer prompt (now RAG with context) ---------------------
+    # ---------------- Answer prompt (RAG with context) -----------------------
 
     ANSWER_PROMPT = ChatPromptTemplate.from_messages(
         [
@@ -266,18 +398,16 @@ def setup_rag_chain():
         ]
     )
 
-    # ---------------- Final LCEL chain (answer + sources) ----------------------
+    # ---------------- Final LCEL chain (answer + sources) --------------------
 
     rag_chain = (
         {
             "query": RunnablePassthrough(),
             "classification": {"query": RunnablePassthrough()} | classification_chain,
         }
-        | RunnableLambda(retrieve_with_scores)
+        | RunnableLambda(hybrid_retrieve_with_scores)
         | {
-            # Run LLM on {query, context}
             "answer": ANSWER_PROMPT | llm | StrOutputParser(),
-            # Pass through sources untouched for UI
             "sources": itemgetter("sources"),
         }
     )
@@ -337,10 +467,17 @@ def main():
                 st.markdown("---")
                 st.markdown("**Sources used:**")
                 for s in sources:
+                    dense_part = (
+                        f"dense_distance={s['dense_distance']:.4f}, "
+                        f"dense_conf≈{s['dense_conf']:.3f}"
+                        if s["dense_distance"] is not None
+                        else "dense_distance=NA, dense_conf≈0.000"
+                    )
                     st.markdown(
                         f"- Source {s['id']}: `{s['file_name']}` "
                         f"(type: {s['document_type']}, page: {s['page']}, "
-                        f"distance: {s['distance']:.4f}, conf≈{s['confidence']:.3f})"
+                        f"{dense_part}, sparse≈{s['sparse_score']:.3f}, "
+                        f"hybrid≈{s['hybrid_score']:.3f})"
                     )
 
     # Store assistant answer in history (just the text, not the sources block)

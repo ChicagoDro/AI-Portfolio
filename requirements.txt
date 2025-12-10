@@ -20,6 +20,9 @@ pypdf
 # Vector DB
 faiss-cpu
 
+# BM25 Retrieve
+rank_bm25
+
 # App UI
 streamlit
 watchdog
