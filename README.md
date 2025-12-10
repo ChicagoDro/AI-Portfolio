@@ -42,14 +42,16 @@ Whether you're learning AI, exploring data engineering, or building cloud-native
 
 ## Let’s Connect
 **Email:** pete@tamisin.com
+
 **LinkedIn:** [https://www.linkedin.com/in/peter-tamisin-50a3233a/](https://www.linkedin.com/in/peter-tamisin-50a3233a/)  
+
 **Location:** Chicago, IL  
 
 Always open to collaborating, mentoring, or helping teams level up their data & AI capabilities.
 
 
 
-# Chi-Town Custom Choppers RAG Capstone  
+# Chi-Town Custom Choppers RAG Example  
 ### *A Progressive Learning Repository for Building Real-World GenAI Retrieval Systems*
 
 Welcome!  
