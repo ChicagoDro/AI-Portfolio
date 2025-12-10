@@ -1,3 +1,53 @@
+# 👋 Hi, I’m **Peter “Lil Dro” Tamisin**
+### **Director of Solutions & Data Strategy • AI & Data Engineering Architect • Builder & Teacher**
+
+I’m a Director-level technical leader with 20+ years of experience designing **modern data platforms**, driving **enterprise AI adoption**, and scaling high-growth products. My work bridges the worlds of **architecture**, **customer success**, and **business strategy** to deliver real-world impact across Fortune 500 enterprises and fast-moving startups.  
+<sub>Based on my resume → 📄</sub>
+
+---
+
+## 🚀 What I Do
+- **Modern Data & AI Architecture** — Databricks, Apache Spark, Snowflake, RAG systems, LangChain  
+- **Solution Architecture & Field Enablement** — global POV frameworks, enterprise onboarding, pre/post-sales  
+- **Technical Product Scaling** — taking a startup MVP to an enterprise-grade platform trusted by global brands  
+- **Hands-on Leadership** — coaching engineers, shaping product strategy, driving customer adoption
+
+---
+
+## 🧠 What I’m Known For
+- Turning complex AI/data problems into clear, actionable designs  
+- High-energy teaching and technical enablement (45+ presenters trained for major events)  
+- Leading every closed enterprise deal at Sync Computing as the SA on 100% of contracts  
+- Supporting executive teams through acquisition diligence and growth strategy  
+- Delivering millions in customer savings and uncovering critical product edge cases
+
+---
+
+## 🎓 Why Students & Teams Work With Me
+I believe in teaching the **why**, not just the **how**.  
+I help teams build confidence, understand architecture deeply, and design systems that **last**.
+
+Whether you're learning AI, exploring data engineering, or building cloud-native systems, my goal is simple:
+
+**Empower you to build, ship, and grow.**
+
+---
+
+## 🛠️ Tech Stack I Work With
+**Platforms:** Databricks • Apache Spark • Snowflake • Kafka  
+**AI/LLM Tools:** LangChain • RAG architectures • Vector DBs  
+**Languages:** Python • SQL • Scala • JavaScript • R • Java  
+**DevOps & Cloud:** AWS • Azure • Airflow • Docker • Terraform • GitHub Actions  
+
+---
+
+## 📫 Let’s Connect
+**Email:** pete@tamisin.com  
+**Location:** Chicago, IL  
+
+Always open to collaborating, mentoring, or helping teams level up their data & AI capabilities.
+
+
 
 # Chi-Town Custom Choppers RAG Capstone  
 ### *A Progressive Learning Repository for Building Real-World GenAI Retrieval Systems*
