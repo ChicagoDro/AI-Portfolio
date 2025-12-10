@@ -1,0 +1,25 @@
+python-dotenv
+
+# LangChain core packages
+langchain
+langchain-core
+langchain-text-splitters
+langchain-community
+
+# OpenAI integration (embeddings + ChatOpenAI)
+langchain-openai
+openai
+
+# Grok/xAI (OpenAI-compatible — optional)
+# If Grok ends up requiring a dedicated package later, add it here.
+# For now we rely on OpenAI-compatible client.
+
+# PDF loader
+pypdf
+
+# Vector DB
+faiss-cpu
+
+# App UI
+streamlit
+watchdog
