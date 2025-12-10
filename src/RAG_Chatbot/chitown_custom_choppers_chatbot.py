@@ -1,5 +1,6 @@
 import os
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Tuple
+from operator import itemgetter
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -17,20 +18,20 @@ from pydantic import BaseModel, Field
 from langchain_community.vectorstores import FAISS
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 
-# ------------------------------------------------------------------------------------
-# CONFIG
-# ------------------------------------------------------------------------------------
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
-INDEX_DIR = PROJECT_ROOT / "indices" / "faiss_chitowncustomchoppers_index"
-
-# To avoid potential issues on some systems (e.g., Mac M1/M2)
-os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
-
-
 load_dotenv()
 
+# ----------------------------- CONFIG ---------------------------------------------
 
-# ----------------------------- LLM FACTORY -----------------------------------------
+# Directory where the FAISS index was saved by ingest_embed_index.py
+# Dynamically resolve repo root
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+
+# Directory where FAISS index is saved/loaded
+INDEX_DIR = PROJECT_ROOT / "indices" / "faiss_chitowncustomchoppers_index"
+
+
+# ----------------------------- LLM FACTORY ----------------------------------------
+
 
 def get_llm():
     """
@@ -42,10 +43,10 @@ def get_llm():
     provider = os.getenv("LLM_PROVIDER", "openai").lower()
 
     if provider == "grok":
-        # You need to set these based on Grok/xAI docs:
+        # Requires:
         #   GROK_API_KEY
-        #   GROK_API_BASE (if needed)
         #   GROK_MODEL (e.g. "grok-2-latest")
+        #   GROK_API_BASE (if needed)
         return ChatOpenAI(
             api_key=os.environ["GROK_API_KEY"],
             model=os.getenv("GROK_MODEL", "grok-2-latest"),
@@ -62,7 +63,8 @@ def get_llm():
         )
 
 
-# ----------------------------- CLASSIFICATION MODEL --------------------------------
+# ----------------------------- CLASSIFICATION MODEL ------------------------------
+
 
 class DocumentCategory(BaseModel):
     category: str = Field(
@@ -74,9 +76,8 @@ class DocumentCategory(BaseModel):
     )
 
 
-# ------------------------------------------------------------------------------------
-# RAG CHAIN SETUP
-# ------------------------------------------------------------------------------------
+# ----------------------------- RAG CHAIN SETUP -----------------------------------
+
 
 @st.cache_resource(show_spinner="Loading vector index and LLM…")
 def setup_rag_chain():
@@ -100,22 +101,26 @@ def setup_rag_chain():
     loaded_vectorstore = FAISS.load_local(
         INDEX_DIR,
         embedding_model,
-        allow_dangerous_deserialization=True,  # fine for local/dev use
+        allow_dangerous_deserialization=True,  # ok for local/dev
     )
 
     llm = get_llm()
 
-    # 2. Classification prompt & chain
-    format_instructions = JsonOutputParser(pydantic_object=DocumentCategory).get_format_instructions()
+    # ---------------- Classification prompt & chain ----------------
+
+    format_instructions = JsonOutputParser(
+        pydantic_object=DocumentCategory
+    ).get_format_instructions()
 
     CLASSIFICATION_PROMPT = ChatPromptTemplate.from_messages(
         [
             (
                 "system",
                 (
-                    "You are a routing assistant that decides which internal document "
-                    "category best matches the user's query.\n\n"
-                    "Choose the single best category from:\n"
+                    "You are a routing assistant for Chitown Custom Choppers, a custom chopper "
+                    "bicycle shop in Rogers Park, Chicago.\n\n"
+                    "Your job is to select the single best internal document category for a query.\n"
+                    "Choose from:\n"
                     "  - HR Policy\n"
                     "  - Customer Policy\n"
                     "  - Customer Service\n"
@@ -131,10 +136,7 @@ def setup_rag_chain():
     ).partial(format_instructions=format_instructions)
 
     parser = JsonOutputParser(pydantic_object=DocumentCategory)
-
     classification_chain = CLASSIFICATION_PROMPT | llm | parser
-
-    # 3. Dynamic retriever
 
     valid_categories = {
         "HR Policy",
@@ -144,9 +146,10 @@ def setup_rag_chain():
         "Marketing",
     }
 
-    def get_filtered_retriever(query: str, classifier_output: Any):
-        """Build a retriever with optional metadata filter based on classification."""
-        # Handle DocumentCategory (Pydantic) vs dict vs anything else
+    # ---------------- Helper: build filter from classification ----------------
+
+    def build_metadata_filter(classifier_output: Any) -> Dict[str, Any] | None:
+        """Convert classifier output into a FAISS metadata filter."""
         if isinstance(classifier_output, DocumentCategory):
             category = classifier_output.category
         elif isinstance(classifier_output, dict):
@@ -157,104 +160,137 @@ def setup_rag_chain():
         print(f"\n[DEBUG] Classification raw output: {classifier_output}")
         print(f"[DEBUG] Chosen category: {category}")
 
-        metadata_filter = None
         if category in valid_categories:
-            metadata_filter = {"document_type": category}
+            return {"document_type": category}
         else:
-            print("[DEBUG] Unknown or missing category; using unfiltered retriever.")
+            print("[DEBUG] Unknown or missing category; using unfiltered search.")
+            return None
+
+    # ---------------- Helper: retrieve docs with scores + build context --------
+
+    def retrieve_with_scores(inputs: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Upgraded retrieval step:
+        - Uses similarity_search_with_score (so we keep scores)
+        - Applies optional metadata filter from classification
+        - Returns:
+            - query
+            - context (string to feed to LLM)
+            - sources (list of provenance dicts for UI)
+        """
+        query = inputs["query"]
+        classification = inputs["classification"]
+
+        metadata_filter = build_metadata_filter(classification)
 
         search_kwargs: Dict[str, Any] = {"k": 3}
         if metadata_filter:
             search_kwargs["filter"] = metadata_filter
 
-        retriever_filtered = loaded_vectorstore.as_retriever(search_kwargs=search_kwargs)
-        return retriever_filtered
+        print(f"[DEBUG] search_kwargs: {search_kwargs}")
 
-    def retrieve_and_format(inputs: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        LCEL step:
-          - Uses classification to get a filtered retriever
-          - Retrieves docs
-          - Formats them into a 'context' string for the final prompt
-        """
-        query = inputs["query"]
-        classification = inputs["classification"]
+        # Directly use similarity_search_with_score to get scores
+        docs_and_scores: List[Tuple[Document, float]] = (
+            loaded_vectorstore.similarity_search_with_score(
+                query, **search_kwargs
+            )
+        )
 
-        retriever = get_filtered_retriever(query, classification)
-        docs: List[Document] = retriever.invoke(query)
+        print(
+            f"[DEBUG] Retrieved {len(docs_and_scores)} documents for query '{query}'."
+        )
 
-        # Build a context string, but keep some metadata for potential debugging
-        context_chunks = []
-        for i, d in enumerate(docs):
-            source = d.metadata.get("file_name", "Unknown source")
-            doc_type = d.metadata.get("document_type", "Unknown type")
+        # Build context string + source metadata
+        context_chunks: List[str] = []
+        sources: List[Dict[str, Any]] = []
+
+        for i, (doc, score) in enumerate(docs_and_scores):
+            file_name = doc.metadata.get("file_name", "Unknown")
+            doc_type = doc.metadata.get("document_type", "Unknown")
+            page = doc.metadata.get("page", "Unknown")
+            # FAISS scores are distances; lower = closer. Convert to a confidence-ish score:
+            # quick heuristic: confidence = 1 / (1 + distance)
+            distance = float(score)
+            confidence = 1.0 / (1.0 + distance)
+
             context_chunks.append(
-                f"[Source {i+1} | {source} | {doc_type}]\n{d.page_content}"
+                f"[Source {i+1} | {file_name} | type={doc_type} | page={page} | "
+                f"distance={distance:.4f} | conf≈{confidence:.3f}]\n"
+                f"{doc.page_content}"
             )
 
-        context = "\n\n---\n\n".join(context_chunks) if context_chunks else "No relevant documents found."
+            sources.append(
+                {
+                    "id": i + 1,
+                    "file_name": file_name,
+                    "document_type": doc_type,
+                    "page": page,
+                    "distance": distance,
+                    "confidence": confidence,
+                }
+            )
 
-        print(f"\n[DEBUG] Retrieved {len(docs)} documents for query '{query}'.")
+        context = (
+            "\n\n---\n\n".join(context_chunks)
+            if context_chunks
+            else "No relevant documents found."
+        )
 
         return {
-            "context": context,
             "query": query,
+            "context": context,
+            "sources": sources,
         }
 
-    # 4. Final answer prompt
+    # ---------------- Answer prompt (now RAG with context) ---------------------
+
     ANSWER_PROMPT = ChatPromptTemplate.from_messages(
         [
             (
                 "system",
                 (
-                    "You are Chi-Town Custom Choppers, a helpful assistant that answers questions "
-                    "using the provided company documents for a small bookstore / café.\n\n"
-                    "Use ONLY the information in the 'Context' below when answering. "
-                    "If the answer is not in the context, say you do not know based on "
-                    "the available documents.\n\n"
-                    "Keep your tone warm, clear, and concise."
+                    "You are the in-house assistant for Chitown Custom Choppers, a custom "
+                    "chopper bicycle shop in Rogers Park, Chicago.\n\n"
+                    "Answer ONLY using the information in the 'Context' below. "
+                    "If the answer is not clearly supported by the context, say that you "
+                    "cannot answer from the shop documents.\n\n"
+                    "Keep your tone friendly, clear, and grounded in the provided text."
                 ),
             ),
             (
                 "human",
-                "Context:\n{context}\n\nUser Question: {query}\n\nAnswer in a friendly tone.",
+                "Context:\n{context}\n\n"
+                "Customer Question: {query}\n\n"
+                "Answer in a helpful, concise way."
             ),
         ]
     )
 
-    def debug_prompt_inputs(x: Dict[str, Any]) -> Dict[str, Any]:
-        print("\n[DEBUG] Inputs to ANSWER_PROMPT:")
-        for k, v in x.items():
-            # v might be long; slice if it's a string
-            if isinstance(v, str):
-                print(f"{k.upper()}:\n{v[:1000]}")
-            else:
-                print(f"{k.upper()}:\n{v}")
-        return x
+    # ---------------- Final LCEL chain (answer + sources) ----------------------
 
     rag_chain = (
         {
             "query": RunnablePassthrough(),
             "classification": {"query": RunnablePassthrough()} | classification_chain,
         }
-        | RunnableLambda(retrieve_and_format)   # returns {"context": ..., "query": ...}
-        | RunnableLambda(debug_prompt_inputs)   # <-- debug here
-        | ANSWER_PROMPT
-        | llm
-        | StrOutputParser()
+        | RunnableLambda(retrieve_with_scores)
+        | {
+            # Run LLM on {query, context}
+            "answer": ANSWER_PROMPT | llm | StrOutputParser(),
+            # Pass through sources untouched for UI
+            "sources": itemgetter("sources"),
+        }
     )
-
 
     return rag_chain
 
 
-# ------------------------------------------------------------------------------------
-# STREAMLIT UI
-# ------------------------------------------------------------------------------------
+# ----------------------------- STREAMLIT UI ----------------------------------------
+
 
 def main():
-    st.set_page_config(page_title="Chi-Town Custom Choppers Chatbot", page_icon="☕")
-    st.title("Chi-Town Custom Choppers Knowledge Assistant")
+    st.set_page_config(page_title="Chitown Custom Choppers RAG Bot", page_icon="🛠️")
+    st.title("🛠️ Chitown Custom Choppers – Shop Knowledge Assistant")
 
     try:
         rag_chain = setup_rag_chain()
@@ -271,7 +307,9 @@ def main():
             st.markdown(msg["content"])
 
     # Chat input
-    prompt_input = st.chat_input("Ask me about policies, returns, operations, or promotions…")
+    prompt_input = st.chat_input(
+        "Ask about HR policies, returns, builds, store operations, or promotions…"
+    )
     if not prompt_input:
         return
 
@@ -282,15 +320,31 @@ def main():
 
     # Generate and show assistant response
     with st.chat_message("assistant"):
-        with st.spinner("Searching the Chi-Town Custom Choppers knowledge base…"):
+        with st.spinner("Checking the Chitown Custom Choppers docs…"):
             try:
-                response = rag_chain.invoke(prompt_input)
+                result = rag_chain.invoke(prompt_input)
             except Exception as e:
                 st.error(f"Error generating response: {e}")
                 return
-            st.markdown(response)
 
-    st.session_state.messages.append({"role": "assistant", "content": response})
+            answer = result.get("answer", "")
+            sources = result.get("sources", [])
+
+            st.markdown(answer)
+
+            # Show provenance block
+            if sources:
+                st.markdown("---")
+                st.markdown("**Sources used:**")
+                for s in sources:
+                    st.markdown(
+                        f"- Source {s['id']}: `{s['file_name']}` "
+                        f"(type: {s['document_type']}, page: {s['page']}, "
+                        f"distance: {s['distance']:.4f}, conf≈{s['confidence']:.3f})"
+                    )
+
+    # Store assistant answer in history (just the text, not the sources block)
+    st.session_state.messages.append({"role": "assistant", "content": answer})
 
 
 if __name__ == "__main__":
