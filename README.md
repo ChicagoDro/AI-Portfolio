@@ -91,7 +91,7 @@ Each step is documented so anyone following your footsteps can learn with you �
 # Repository Structure
 
 ```text
-RAG-Capstone/
+AI-Portfolio/
 ├── README.md                    # ← You are here
 ├── requirements.txt
 ├── .env.example (.env .gitnored)
@@ -108,10 +108,11 @@ RAG-Capstone/
 ├── indices/                     # Vector + graph indices (generated)
 ├── notebooks/                   # Experimentation + learning scratchpad
 └── upgrades/                    # ← Progressive learning modules
-    ├── 01-basic-rag/
-    ├── 02-citations-and-hybrid/
-    ├── 03-graph-rag/
-    └── 04-evaluation-and-orchestration/
+    ├──RAG_Chatbot
+        ├── 01-citations-and-provenance/
+        ├── 02-hybrid/
+        ├── 03-graph-rag/
+        └── 04-evaluation-and-orchestration/
 ````
 
 ### ✔ `src/`
