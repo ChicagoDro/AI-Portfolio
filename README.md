@@ -44,7 +44,7 @@ RAG-Capstone/
 ├── requirements.txt
 ├── .env.example
 ├── src/
-│   └── cozy_corner/
+│   └── RAG_Chatbot/
 │       ├── ingest_embed_index.py
 │       ├── chitown_custom_choppers_chatbot.py
 │       ├── graph_kg_builder.py
@@ -52,7 +52,7 @@ RAG-Capstone/
 │       └── config.py
 ├── data/
 │   ├── document-metadata.json
-│   └── Company-Data/            # (Optional; usually .gitignored)
+│   └── Chitown_Custom_Choppers/            # (Optional; usually .gitignored)
 ├── indices/                     # Vector + graph indices (generated)
 ├── notebooks/                   # Experimentation + learning scratchpad
 └── upgrades/                    # ← Progressive learning modules
