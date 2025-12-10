@@ -42,7 +42,7 @@ Each step is documented so anyone following your footsteps can learn with you �
 RAG-Capstone/
 ├── README.md                    # ← You are here
 ├── requirements.txt
-├── .env.example
+├── .env.example (.env .gitnored)
 ├── src/
 │   └── RAG_Chatbot/
 │       ├── ingest_embed_index.py
@@ -52,7 +52,7 @@ RAG-Capstone/
 │       └── config.py
 ├── data/
 │   ├── document-metadata.json
-│   └── Chitown_Custom_Choppers/            # (Optional; usually .gitignored)
+│   └── Chitown_Custom_Choppers/            # (LLM generated company data files)
 ├── indices/                     # Vector + graph indices (generated)
 ├── notebooks/                   # Experimentation + learning scratchpad
 └── upgrades/                    # ← Progressive learning modules
