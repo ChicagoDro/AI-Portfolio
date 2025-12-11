@@ -212,3 +212,8 @@ into:
   * `"sources"`
 * **UI** displays both the answer and a human-readable **Sources** block
 
+### **Portfolio Value**
+
+You can now say:
+
+> “I enhanced my RAG pipeline with citations and provenance tracking, enabling the model to surface source documents, trace reasoning steps, and deliver auditable, trustworthy responses.”
