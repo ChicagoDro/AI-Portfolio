@@ -1,5 +1,6 @@
 # ====================================================================================
-# INGESTION SCRIPT: Creates the FAISS Vector Index with Metadata Tags (OpenAI version)
+# INGESTION SCRIPT: Creates the FAISS Vector Index with Metadata Tags
+#   - Supports OpenAI, Grok (OpenAI-compatible), and Gemini
 # ====================================================================================
 
 import os
@@ -14,14 +15,15 @@ load_dotenv()
 from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
-# --- LangChain Community / OpenAI Imports ---
+# --- LangChain Community / Vector Store ---
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_community.vectorstores import FAISS
-from langchain_openai import OpenAIEmbeddings
 
+# --- Embeddings (provider-aware) ---
+from langchain_openai import OpenAIEmbeddings
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
 
 # ----------------------------- CONFIG ------------------------------------------------
-# ----------------------------- PATH CONFIG ------------------------------------------------
 
 # Dynamically resolve repo root
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -32,10 +34,11 @@ METADATA_FILE_PATH = PROJECT_ROOT / "data" / "document-metadata.json"
 # Directory that stores PDF files
 DATA_DIR = PROJECT_ROOT / "data" / "Chitown_Custom_Choppers"
 
-# Directory where FAISS index is saved/loaded
-INDEX_DIR = PROJECT_ROOT / "indices" / "faiss_chitowncustomchoppers_index"
+# Provider (controls embeddings + index dir)
+PROVIDER = os.getenv("LLM_PROVIDER", "openai").lower()
 
-# Create dir if needed
+# Directory where FAISS index is saved/loaded (provider-specific)
+INDEX_DIR = PROJECT_ROOT / "indices" / f"faiss_chitowncustomchoppers_index_{PROVIDER}"
 INDEX_DIR.mkdir(parents=True, exist_ok=True)
 
 
@@ -113,15 +116,56 @@ def chunk_documents(
     return chunks
 
 
+def get_embedding_model():
+    """
+    Return an embeddings model compatible with the current provider.
+
+    Behavior:
+      - LLM_PROVIDER=gemini  -> GoogleGenerativeAIEmbeddings
+      - LLM_PROVIDER=openai  -> OpenAIEmbeddings
+      - LLM_PROVIDER=grok    -> OpenAIEmbeddings (OpenAI-compatible backend)
+    """
+    provider = PROVIDER
+
+    # ---------------------------
+    # Gemini embeddings
+    # ---------------------------
+    if provider == "gemini":
+        gemini_key = os.getenv("GEMINI_API_KEY")
+        if not gemini_key:
+            raise EnvironmentError(
+                "GEMINI_API_KEY is not set. Please add it to your .env or environment "
+                "when using LLM_PROVIDER=gemini."
+            )
+
+        print("Using Gemini embeddings (GoogleGenerativeAIEmbeddings).")
+        return GoogleGenerativeAIEmbeddings(
+            google_api_key=gemini_key,
+            model=os.getenv("GEMINI_EMBEDDING_MODEL", "models/text-embedding-004"),
+        )
+
+    # ---------------------------
+    # Default: OpenAI embeddings (for openai + grok)
+    # ---------------------------
+    openai_key = os.getenv("OPENAI_API_KEY")
+    if not openai_key:
+        raise EnvironmentError(
+            "OPENAI_API_KEY is not set. Please add it to your .env or environment "
+            "for LLM_PROVIDER=openai or LLM_PROVIDER=grok.\n"
+            "If you want a full-Gemini stack, set LLM_PROVIDER=gemini and GEMINI_API_KEY."
+        )
+
+    print("Using OpenAI embeddings (OpenAIEmbeddings).")
+    return OpenAIEmbeddings(
+        model=os.getenv("EMBEDDING_MODEL", "text-embedding-3-small")
+    )
+
+
 # ----------------------------- MAIN -------------------------------------------------
 
 def main():
-    # 0. Check API key
-    openai_api_key = os.getenv("OPENAI_API_KEY")
-    if not openai_api_key:
-        raise EnvironmentError(
-            "OPENAI_API_KEY is not set. Please add it to your .env or environment."
-        )
+    print(f"\n=== Ingestion started with LLM_PROVIDER='{PROVIDER}' ===")
+    print(f"Index directory: {INDEX_DIR}\n")
 
     # 1. Load metadata
     metadata_entries = load_metadata(METADATA_FILE_PATH)
@@ -136,18 +180,16 @@ def main():
     # 3. Chunk documents
     document_chunks = chunk_documents(raw_documents)
 
-    # 4. Create vector store with OpenAI embeddings
-    print("\n--- 4. Creating Vector Store (Embedding with OpenAI) ---")
+    # 4. Create vector store with provider-appropriate embeddings
+    print("\n--- 4. Creating Vector Store (Embedding) ---")
     try:
-        embedding_model = OpenAIEmbeddings(
-            model=os.getenv("EMBEDDING_MODEL", "text-embedding-3-small")
-        )
+        embedding_model = get_embedding_model()
         vectorstore = FAISS.from_documents(document_chunks, embedding_model)
 
         vectorstore.save_local(INDEX_DIR)
-        print(f"Successfully created and saved FAISS index: '{INDEX_DIR}'")
+        print(f"\n✅ Successfully created and saved FAISS index: '{INDEX_DIR}'")
     except Exception as e:
-        print(f"An error occurred during embedding or indexing: {e}")
+        print(f"\n❌ An error occurred during embedding or indexing: {e}")
 
 
 if __name__ == "__main__":

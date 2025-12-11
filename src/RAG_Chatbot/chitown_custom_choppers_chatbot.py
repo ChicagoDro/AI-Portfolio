@@ -27,6 +27,12 @@ from pydantic import BaseModel, Field
 # --- Vector Store & Embeddings ---
 from langchain_community.vectorstores import FAISS
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+from langchain_google_genai import (
+    ChatGoogleGenerativeAI,
+    GoogleGenerativeAIEmbeddings,
+)
+
+
 
 # --- GraphRAG utilities ---
 from src.RAG_Chatbot.graph_retrieval import (
@@ -37,6 +43,8 @@ from src.RAG_Chatbot.graph_retrieval import (
     get_q3_2024_total_sales,
 )
 
+
+
 load_dotenv()
 
 # ----------------------------- CONFIG ---------------------------------------------
@@ -45,7 +53,8 @@ load_dotenv()
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 # Directory where FAISS index is saved/loaded
-INDEX_DIR = PROJECT_ROOT / "indices" / "faiss_chitowncustomchoppers_index"
+PROVIDER = os.getenv("LLM_PROVIDER", "openai").lower()
+INDEX_DIR = PROJECT_ROOT / "indices" / f"faiss_chitowncustomchoppers_index_{PROVIDER}"
 
 
 # ----------------------------- LLM FACTORY ----------------------------------------
@@ -53,32 +62,87 @@ INDEX_DIR = PROJECT_ROOT / "indices" / "faiss_chitowncustomchoppers_index"
 
 def get_llm():
     """
-    Return a ChatOpenAI LLM configured for either:
-      - OpenAI (default)
-      - Grok (OpenAI-compatible endpoint, if you configure it)
-    Controlled via env var: LLM_PROVIDER in {"openai", "grok"}.
+    Return an LLM configured for one of the supported providers:
+      - OpenAI   (default)
+      - Grok     (OpenAI-compatible endpoint)
+      - Gemini   (Google Generative AI)
+
+    Controlled via env var: LLM_PROVIDER in {"openai", "grok", "gemini"}.
     """
     provider = os.getenv("LLM_PROVIDER", "openai").lower()
 
+    # Env vars come in as strings — cast them
+    temperature = float(os.getenv("LLM_TEMP", "0.2"))
+    timeout = float(os.getenv("LLM_TIMEOUT", "60.0"))
+
+    # ---------------------------
+    # Gemini (Google GenAI)
+    # ---------------------------
+    if provider == "gemini":
+        return ChatGoogleGenerativeAI(
+            google_api_key=os.environ["GEMINI_API_KEY"],
+            model=os.getenv("GEMINI_MODEL", "gemini-1.5-flash"),
+            temperature=temperature,
+            timeout=timeout,
+        )
+
+    # ---------------------------
+    # Grok (OpenAI-compatible)
+    # ---------------------------
     if provider == "grok":
-        # Requires:
-        #   GROK_API_KEY
-        #   GROK_MODEL (e.g. "grok-2-latest")
-        #   GROK_API_BASE (if needed)
         return ChatOpenAI(
             api_key=os.environ["GROK_API_KEY"],
             model=os.getenv("GROK_MODEL", "grok-2-latest"),
             base_url=os.getenv("GROK_API_BASE", None),
-            temperature=0.2,
-            timeout=60.0,
+            temperature=temperature,
+            timeout=timeout,
         )
-    else:
-        # Default: OpenAI
-        return ChatOpenAI(
-            model=os.getenv("OPENAI_MODEL", "gpt-4.1-mini"),
-            temperature=0.2,
-            timeout=60.0,
+
+    # ---------------------------
+    # OpenAI (default)
+    # ---------------------------
+    return ChatOpenAI(
+        model=os.getenv("OPENAI_MODEL", "gpt-4.1-mini"),
+        temperature=temperature,
+        timeout=timeout,
+    )
+
+def get_embedding_model():
+    """
+    Return an embeddings model compatible with the current provider.
+
+    By default, we tie embeddings to LLM_PROVIDER:
+      - LLM_PROVIDER=gemini  -> GoogleGenerativeAIEmbeddings
+      - LLM_PROVIDER=openai  -> OpenAIEmbeddings
+      - LLM_PROVIDER=grok    -> OpenAIEmbeddings (OpenAI-compatible)
+
+    You can override with EMBEDDING_PROVIDER if needed.
+    """
+    provider = os.getenv("EMBEDDING_PROVIDER", os.getenv("LLM_PROVIDER", "openai")).lower()
+
+    # ---------------------------
+    # Gemini embeddings
+    # ---------------------------
+    if provider == "gemini":
+        return GoogleGenerativeAIEmbeddings(
+            google_api_key=os.environ["GEMINI_API_KEY"],
+            model=os.getenv("GEMINI_EMBEDDING_MODEL", "models/text-embedding-004"),
         )
+
+    # ---------------------------
+    # Default: OpenAI embeddings
+    # ---------------------------
+    openai_api_key = os.getenv("OPENAI_API_KEY")
+    if not openai_api_key:
+        raise EnvironmentError(
+            "OPENAI_API_KEY is not set. Either:\n"
+            "- Set LLM_PROVIDER=gemini (and GEMINI_API_KEY) so embeddings use Gemini, or\n"
+            "- Provide OPENAI_API_KEY for OpenAI/Grok embeddings."
+        )
+
+    return OpenAIEmbeddings(
+        model=os.getenv("EMBEDDING_MODEL", "text-embedding-3-small")
+    )
 
 
 # ----------------------------- CLASSIFICATION MODEL ------------------------------
@@ -99,16 +163,8 @@ class DocumentCategory(BaseModel):
 
 @st.cache_resource(show_spinner="Loading vector index and LLM…")
 def setup_rag_chain():
-    # 1. Load vector store with OpenAI embeddings
-    openai_api_key = os.getenv("OPENAI_API_KEY")
-    if not openai_api_key:
-        raise EnvironmentError(
-            "OPENAI_API_KEY is not set. Please add it to your .env or environment."
-        )
-
-    embedding_model = OpenAIEmbeddings(
-        model=os.getenv("EMBEDDING_MODEL", "text-embedding-3-small")
-    )
+    # 1. Load vector store with LLM specific embeddings
+    embedding_model = get_embedding_model()
 
     if not os.path.exists(INDEX_DIR):
         raise FileNotFoundError(

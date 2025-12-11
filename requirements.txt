@@ -14,6 +14,11 @@ openai
 # If Grok ends up requiring a dedicated package later, add it here.
 # For now we rely on OpenAI-compatible client.
 
+
+# Gemini / Google Generative AI
+langchain-google-genai
+google-generativeai
+
 # PDF loader
 pypdf
 
