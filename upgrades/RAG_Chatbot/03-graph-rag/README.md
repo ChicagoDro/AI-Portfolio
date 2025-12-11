@@ -294,3 +294,8 @@ This GraphRAG upgrade is a major architectural step:
 
 This upgrade is where the system moves from “RAG demo” → **AI Solution Architecture**.
 
+### **Portfolio Value**
+
+You can now say:
+
+> “I designed and integrated a GraphRAG layer on top of my existing RAG system, building a Python-based knowledge graph (Neo4j-like) to support entity-aware retrieval, graph traversal, and hybrid fusion—allowing the model to answer multi-hop, relationship-driven questions with higher precision and interpretability.”

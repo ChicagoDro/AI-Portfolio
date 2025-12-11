@@ -171,7 +171,7 @@ This showcases multi-channel reasoning and retrieval transparency.
 
 ---
 
-# What You Learned in This Upgrade
+# Summary
 
 This upgrade demonstrates:
 
@@ -194,6 +194,4 @@ This upgrade demonstrates:
 You can now say:
 
 > “I implemented a hybrid FAISS + BM25 retrieval pipeline with weighted fusion and provenance tracking to improve recall across semantic and keyword-heavy queries.”
-
-This is exactly the kind of capability expected of an **AI Solution Architect**.
 
