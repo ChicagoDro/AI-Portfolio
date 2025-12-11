@@ -9,6 +9,8 @@ A practical GenAI portfolio project showcasing **real-world retrieval architectu
 
 The sample dataset used in this project is a synthetic, LLM-generated knowledge base representing a fictional bicycle shop called **Chi-Town Custom Choppers**. It includes richly detailed documents covering customers, bikes, service orders, upgrade packages, parts catalogs, shop policies, mechanic bios, and narrative descriptions of custom build workflows. Although entirely artificial, the dataset is structured to mimic realistic business operations, complete with relationships between entities such as customers → bikes → upgrades, mechanics → certifications, and packages → components. This makes it ideal for demonstrating RAG, hybrid search, and GraphRAG techniques in a safe, non-sensitive environment while still providing enough complexity to showcase multi-hop reasoning, entity extraction, and retrieval orchestration.
 
+![Chi-Town Custom Chopper](./chopper.png)
+
 ---
 
 ## 1. What This Project Demonstrates
