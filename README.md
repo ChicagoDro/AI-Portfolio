@@ -1,243 +1,364 @@
-#  Hi, I’m **Pete Tamisin**
-### **Technical GTM Leader • AI & Data Engineering Architect • Builder & Teacher**
+# AI Portfolio – Chi-Town Custom Choppers RAG Lab
 
-I’m a Director-level technical leader with 20+ years of experience designing **modern data platforms**, driving **enterprise AI adoption**, and scaling high-growth products. My work bridges the worlds of **architecture**, **customer success**, and **business strategy** to deliver real-world impact across Fortune 500 enterprises and fast-moving startups. (current Capital One, ex-Databricks, ex-consultant, ex-Siemens, ex-Motorola, 2 Series A startups with successful exits)  
+A practical GenAI portfolio project showcasing **real-world retrieval architectures**:
 
----
+- Classic **vector RAG**
+- **Hybrid** dense + BM25 retrieval
+- **GraphRAG** over a knowledge graph
+- Room for **evaluation + orchestration** upgrades
 
-##  What I Do
-- **Modern Data & AI Architecture** — Databricks, Apache Spark, Snowflake, RAG systems, LangChain  
-- **Solution Architecture & Field Enablement** — global POV frameworks, enterprise onboarding, pre/post-sales  
-- **Technical Product Scaling** — taking a startup MVP to an enterprise-grade platform trusted by global brands  
-- **Hands-on Leadership** — coaching engineers, shaping product strategy, driving customer adoption
+The domain is a fictional custom motorcycle shop – **Chi-Town Custom Choppers** – so you can show off architecture skills without touching real customer data.
 
 ---
 
-##  What I’m Known For
-- Turning complex AI/data problems into clear, actionable designs  
-- High-energy teaching and technical enablement (45+ presenters trained for major events)  
-- Leading every closed enterprise deal at Sync Computing as the SA on 100% of contracts  
-- Supporting executive teams through acquisition diligence and growth strategy  
-- Delivering millions in customer ROI and uncovering critical product edge cases
+## 1. What This Project Demonstrates
+
+This repo is meant to show employers, collaborators, and students that you can:
+
+- Design and implement **production-grade RAG systems**, not just toy demos  
+- Evolve an architecture from **simple vector search → hybrid RAG → GraphRAG**
+- Think like an **AI Solution Architect**: clear modules, extension points, and documentation
+- Work with modern GenAI tooling (LLMs, embeddings, vector stores, knowledge graphs)
 
 ---
 
-##  Why Students & Teams Work With Me
-I believe in teaching the **why**, not just the **how**.  
-I help teams build confidence, understand architecture deeply, and design systems that **last**.
+## 2. High-Level Architecture
 
-Whether you're learning AI, exploring data engineering, or building cloud-native systems, my goal is simple:
+At a high level, the system looks like this:
 
-**Empower you to build, ship, and grow.**
+```text
+          ┌─────────────────────┐
+          │  Domain Documents   │  (data/Chitown_Custom_Choppers)
+          └─────────┬───────────┘
+                    │
+        Ingestion & Indexing (offline)
+                    │
+     ┌──────────────┴───────────-────────────┐
+     │                                       │
+┌────▼──────────┐                     ┌──────▼───────────┐
+│ Vector Index  │ (FAISS, embeddings) │ Knowledge Graph  │
+│ (indices/...) │                     │ (entities, edges)│
+└────┬──────────┘                     └──────┬───────────┘
+     │                                       │
+     └──────────────┬────────────--──────────┘
+                    │
+           Hybrid Query Engine
+  (semantic + BM25 + graph-aware retrieval)
+                    │
+                    ▼
+              LLM Answering
+      (OpenAI / Grok or other providers)
+````
+
+### Retrieval Strategies
+
+The core chatbot uses multiple retrieval modes:
+
+1. **Vector RAG (dense)**
+
+   * Embed chunks from the Chi-Town docs
+   * Store in a FAISS (or similar) index under `indices/`
+   * Retrieve semantically similar chunks for each query
+
+2. **Hybrid Search (dense + BM25)**
+
+   * Combine **semantic vector search** with **sparse BM25**
+   * Use **fusion** (e.g., reciprocal rank fusion) to balance:
+
+     * “semantic closeness” (meaning)
+     * “lexical match” (exact terms, SKUs, part names, etc.)
+
+3. **GraphRAG (knowledge graph–aware)**
+
+   * Build a **knowledge graph** from the same docs:
+
+     * Extract entities (customers, bikes, parts, work orders…)
+     * Extract relationships (owns, purchased, installed, scheduled, etc.)
+   * At query time, the system can:
+
+     * Expand around query-relevant entities
+     * Pull a subgraph as structured context
+     * Optionally fuse graph context with vector results
+
+4. **Hybrid Query Planner (routing + fusion)**
+
+   * For “who/what/which” entity-centric questions, lean more on **GraphRAG**
+   * For fuzzy, descriptive questions, lean more on **semantic + BM25 hybrid**
+   * Combine multiple signals into a final ranked context window for the LLM
+
+> The **goal** is to show you understand *how* to combine these pieces, not just that you can call a single `RetrievalQA` chain.
 
 ---
 
-## 🛠️ Tech Stack I Work With
-**Platforms:** Databricks • Apache Spark • Snowflake • Kafka  
-**AI/LLM Tools:** LangChain • RAG architectures • Vector DBs  
-**Languages:** Python • SQL • Scala • JavaScript • R • Java  
-**DevOps & Cloud:** AWS • Azure • Airflow • Docker • Terraform • GitHub Actions  
-
----
-
-## Let’s Connect
-**Email:** pete@tamisin.com
-
-**LinkedIn:** [https://www.linkedin.com/in/peter-tamisin-50a3233a/](https://www.linkedin.com/in/peter-tamisin-50a3233a/)  
-
-**Location:** Chicago, IL  
-
-Always open to collaborating, mentoring, or helping teams level up their data & AI capabilities.
-
-
-
-# Chi-Town Custom Choppers RAG Example  
-### *A Progressive Learning Repository for Building Real-World GenAI Retrieval Systems*
-
-Welcome!  
-This repository is intentionally structured as **both**:
-
-1. A **production-quality RAG project** you can run today  
-2. A **progressive, educational curriculum** showing the step-by-step path toward becoming an **AI Solution Architect**
-
-It is designed for employers, collaborators, and learners who want to see:
-
-- Clean, well-designed GenAI systems  
-- Real retrieval architectures you’d build to customize responses from LLMs like ChatGpt or Grok  
-- A documented roadmap showing *how* each capability was added  
-- A portfolio demonstrating deep mastery, not surface-level demos  
-
----
-
-# Project Purpose
-
-This repository is your personal **GenAI mastery journey**.  
-
-It begins with a simple RAG system, then evolves through increasingly advanced architectural upgrades:
-
-- vector retrieval  
-- hybrid search  
-- citations and provenance  
-- query rewriting  
-- graph-based retrieval (GraphRAG)  
-- validation and self-refinement  
-- orchestration  
-- evaluation pipelines  
-
-Each step is documented so anyone following your footsteps can learn with you — and employers can clearly see your growth and technical depth.
-
----
-
-# Repository Structure
+## 3. Repository Layout
 
 ```text
 AI-Portfolio/
-├── README.md                    # ← You are here
+├── README.md                     # ← You are here
 ├── requirements.txt
-├── .env.example (.env .gitnored)
+├── .env.example                  # sample environment variables (.env is gitignored)
+├── .python-version               # Python version used locally
+├── main.py                       # (optional entrypoint / orchestration)
 ├── src/
 │   └── RAG_Chatbot/
-│       ├── ingest_embed_index.py
-│       ├── chitown_custom_choppers_chatbot.py
-│       ├── graph_kg_builder.py
-│       ├── graph_retrieval.py
-│       └── config.py
+│       ├── ingest_embed_index.py         # Build vector + graph indices from data/
+│       ├── chitown_custom_choppers_chatbot.py  # Main chatbot / Streamlit app
+│       ├── graph_kg_builder.py          # Knowledge graph construction (GraphRAG)
+│       ├── graph_retrieval.py           # Graph-based + hybrid retrieval helpers
+│       └── config.py                    # Central configuration (models, paths, etc.)
 ├── data/
-│   ├── document-metadata.json
-│   └── Chitown_Custom_Choppers/            # (LLM generated company data files)
-├── indices/                     # Vector + graph indices (generated)
-├── notebooks/                   # Experimentation + learning scratchpad
-└── upgrades/                    # ← Progressive learning modules
-    ├──RAG_Chatbot
+│   ├── document-metadata.json           # Chunk + document metadata
+│   └── Chitown_Custom_Choppers/        # Domain docs (LLM-generated shop data)
+├── indices/
+│   └── faiss_chitowncustomchoppers_index/  # Generated vector + graph indices
+├── notebooks/                           # Scratch space / experiments
+└── upgrades/
+    └── RAG_Chatbot/
         ├── 01-citations-and-provenance/
         ├── 02-hybrid/
         ├── 03-graph-rag/
         └── 04-evaluation-and-orchestration/
-````
+```
 
-### ✔ `src/`
+### `src/` – Core System
 
-The **current, stable implementation** of the Chi-Town Custom Choppers RAG system.
+* **`ingest_embed_index.py`**
 
-### ✔ `upgrades/`
+  * Loads domain docs from `data/Chitown_Custom_Choppers/`
+  * Splits into chunks, embeds them, and writes a **vector index** under `indices/`
+  * Optionally calls `graph_kg_builder.py` to build / refresh the **knowledge graph**
 
-A **progressive curriculum**.
-Each folder contains:
+* **`chitown_custom_choppers_chatbot.py`**
 
-* A dedicated `README.md` explaining the concept
-* Architecture diagrams
-* Design decisions
-* Key code snippets or diffs
-* Why this upgrade matters in real-world GenAI systems
+  * Main chatbot application (typically launched via **Streamlit**)
+  * Orchestrates:
 
-This is where you demonstrate *architect-level thinking*.
+    * user input → query analysis
+    * hybrid retrieval (vector + BM25 + graph)
+    * LLM invocation
+    * display of answers + citations
 
-### ✔ `notebooks/`
+* **`graph_kg_builder.py`**
 
-Your scratch environment for exploration and prototyping.
-Shows your research process — something employers value.
+  * Extracts entities and relationships from the corpus
+  * Persists a graph structure used by GraphRAG
+
+* **`graph_retrieval.py`**
+
+  * Implements graph-based lookups and hybrid (graph + vector) retrieval flows
+
+* **`config.py`**
+
+  * Central configuration: model names, paths, index locations, and feature flags (e.g. toggle hybrid/GraphRAG behavior)
+
+### `upgrades/` – Progressive Learning Path
+
+Each folder is a **self-contained upgrade** that explains a concrete GenAI architecture concept:
+
+1. `01-citations-and-provenance/`
+2. `02-hybrid/`
+3. `03-graph-rag/`
+4. `04-evaluation-and-orchestration/`
+
+Use these to **tell the story** of how the system evolved, and to teach others.
 
 ---
 
-# Running the Main Application
+## 4. Environment Setup
 
-After installing dependencies:
+### 4.1 Prerequisites
+
+* **Python**: use the version in `.python-version` (or any compatible Python 3.11+)
+* **pip** (or `uv` / `pipx`, etc.)
+* **Virtual environment** (recommended): `venv`, `conda`, or similar
+* **OpenAI / other LLM provider account(s)** for embeddings + chat models
+* Optionally: **Grok / X.ai**, or any other configured model provider
+
+### 4.2 Clone the Repo
 
 ```bash
-python ingest_embed_index.py
-streamlit run cozy_corner_chatbot.py
+git clone https://github.com/ChicagoDro/AI-Portfolio.git
+cd AI-Portfolio
 ```
 
-The system supports:
+### 4.3 Create and Activate a Virtual Env
 
-* OpenAI embeddings
-* OpenAI or Grok LLMs
-* Metadata filtering
-* Classification + retrieval fusion
-* Future: GraphRAG, hybrid search, validation, and more
+```bash
+# create venv
+python -m venv .venv
 
----
+# activate (macOS / Linux)
+source .venv/bin/activate
 
-# Learning Roadmap (Progressive)
+# activate (Windows, PowerShell)
+.\.venv\Scripts\Activate.ps1
+```
 
-This repository is organized into a learning journey:
+### 4.4 Install Dependencies
 
-### **Upgrade 1: Basic RAG**
+All Python dependencies are pinned in `requirements.txt`:
 
-Builds a foundational vector→retriever→LLM pipeline.
+```bash
+pip install --upgrade pip
+pip install -r requirements.txt
+```
 
-### **Upgrade 2: Citations + Chunk Scoring + Hybrid Search**
+If you use `uv` or a different installer, it should still be able to consume `requirements.txt`.
 
-Adds production features: provenance, BM25, fusion.
+### 4.5 Configure Environment Variables
 
-### **Upgrade 3: GraphRAG**
+Copy the example env file and fill in the secrets:
 
-Adds entity extraction, knowledge graph construction, graph-based retrieval, and vector+graph fusion.
+```bash
+cp .env.example .env
+```
 
-### **Upgrade 4: Evaluation + Orchestration**
+Open `.env` and set the appropriate values. Typical entries include (exact names may vary; see `.env.example`):
 
-Adds:
+* API keys for:
 
-* groundedness checks
-* self-refinement
-* orchestrated workflows
-* evaluation sets
+  * **Embeddings provider** (e.g., `OPENAI_API_KEY`)
+  * **Chat/completion model provider(s)`** (OpenAI, Grok, etc.)
+* Default model names for:
 
-Each upgrade teaches a real GenAI system design concept used in industry.
+  * Embeddings
+  * Chat / completion
+* Optional tuning switches:
 
----
+  * Temperature, max tokens
+  * Whether to enable hybrid search / GraphRAG by default
 
-# 👥 For Employers
-
-This repo shows:
-
-* Engineering ability (Python, LangChain, embeddings, FAISS, Streamlit)
-* Architecture thinking (pipelines, modularity, hybrid retrieval)
-* Deepening capability (from basic RAG → GraphRAG → evaluation)
-* Growth mindset and documentation skills
-* Ability to communicate complex systems clearly
-
-You can explore the `upgrades/` directory to see the progression from novice → architect-level designs.
+> **Note:** Keep `.env` out of version control; it’s already in `.gitignore`.
 
 ---
 
-# For Learners
+## 5. Building the Indices
 
-Each upgrade folder is a **mini-course**.
-You can follow along step by step to learn:
+Before you can chat with the system, you need to ingest the data and build the indices.
 
-* how RAG really works
-* how to improve retrieval quality
-* how to build a knowledge graph from text
-* how to fuse graph and vector search
-* how to write production-ready GenAI pipelines
+From the repo root:
 
-This repository is designed to be forked and extended.
+```bash
+# run the ingestion + embedding pipeline
+python src/RAG_Chatbot/ingest_embed_index.py
+```
 
----
+This will:
 
-# Future Goals
+1. Load documents from `./data/Chitown_Custom_Choppers/`
+2. Chunk and embed them
+3. Write / refresh:
 
-This repository will continue to evolve into:
+   * the **vector index** under `./indices/`
+   * the **document metadata** under `./data/`
+   * optionally the **knowledge graph** used for GraphRAG
 
-* Multimodal RAG
-* Agentic workflows
-* Evaluation frameworks
-* Deployment examples
-* Model routing & advanced pipelines
+If you add new documents or modify the corpus, re-run this script to rebuild the indices.
 
 ---
 
-# Closing
+## 6. Running the Chatbot
 
-This project is both:
+Once your environment is configured and indices are built, you have two main ways to run the app.
 
-* a **portfolio piece** showing real, deep GenAI capability, and
-* a **learning resource** for anyone who wants to follow the same journey.
+### 6.1 Streamlit UI (recommended)
 
-Feel free to explore, fork, study, and build on it.
+From the repo root:
 
-Welcome to the Chi-Town Custom Choppers — where retrieval meets craftsmanship.
+```bash
+streamlit run src/RAG_Chatbot/chitown_custom_choppers_chatbot.py
+```
+
+Then open the URL printed in the console (typically `http://localhost:8501`) and:
+
+* Ask domain questions (“What’s the lead time for a custom build?”)
+* Try more complex queries (“Which packages include both suspension and exhaust upgrades?”)
+* Switch between / test hybrid and GraphRAG behaviors (depending on how you’ve wired the UI)
+
+### 6.2 Direct Python Execution (CLI, if enabled)
+
+If `chitown_custom_choppers_chatbot.py` or `main.py` exposes a CLI entrypoint, you can also run:
+
+```bash
+python src/RAG_Chatbot/chitown_custom_choppers_chatbot.py
+# or
+python main.py
+```
+
+Use this mode for quick tests, scripts, or integration into other tooling.
+
+---
+
+## 7. Learning Roadmap (Progressive Upgrades)
+
+The `upgrades/RAG_Chatbot` directory documents your **learning journey**:
+
+1. **Upgrade 1 – Citations & Provenance**
+
+   * Add chunk IDs and source metadata
+   * Display sources alongside answers
+   * Demonstrates *grounded* RAG and trustworthiness
+
+2. **Upgrade 2 – Hybrid Search (Dense + BM25)**
+
+   * Introduce sparse retrieval (BM25)
+   * Implement hybrid scoring / fusion
+   * Show why hybrid beats pure vector search on many real tasks
+
+3. **Upgrade 3 – GraphRAG**
+
+   * Build an entity-level knowledge graph from the corpus
+   * Use graph traversal + neighborhoods to retrieve structured context
+   * Fuse graph and vector signals for richer, more coherent answers
+
+4. **Upgrade 4 – Evaluation & Orchestration**
+
+   * Add simple evaluation sets (Q/A pairs, metrics)
+   * Introduce self-refinement, groundedness checks, and routing/orchestration patterns
+   * Demonstrate how to treat RAG as a **system**, not a single chain
+
+Each upgrade is intended to be a small, teachable module with:
+
+* A short `README.md`
+* Architecture diagrams / call graphs
+* Design decisions and tradeoffs
+* Key code snippets or diffs from the previous stage
+
+---
+
+## 8. For Employers & Collaborators
+
+This repo is designed to show:
+
+* **Engineering ability** – Python, vector stores, embeddings, Streamlit, etc.
+* **Architecture thinking** – hybrid retrieval, GraphRAG, progressive upgrades
+* **Documentation & teaching** – each step is explained, not just implemented
+* **Growth mindset** – the roadmap continues with agents, evaluation, and deployment
+
+If you’d like to discuss the design or extend it to your own domain, feel free to reach out.
+
+---
+
+## 9. About the Author
+
+**Pete Tamisin** – Technical GTM Leader • AI & Data Engineering Architect • Builder & Teacher
+Based in Chicago, IL.
+
+* 20+ years designing data & AI platforms (Capital One, ex-Databricks, startups)
+* Focused on **modern data platforms**, **RAG systems**, and **enterprise GenAI adoption**
+* Passionate about **teaching** and helping teams ship real-world AI systems
+
+📧 Email: `pete@tamisin.com`
+🔗 LinkedIn: [peter-tamisin-50a3233a](https://www.linkedin.com/in/peter-tamisin-50a3233a/)
+
+---
+
+Feel free to fork, explore, and adapt this project for your own AI portfolio.
+
+Welcome to **Chi-Town Custom Choppers** – where retrieval meets craftsmanship. 🏍️
 
 ```
+
+If you want, I can also draft a short `CONTRIBUTING.md` or a minimal `UPGRADES.md` that just links to and describes each of the upgrade folders in more detail.
+::contentReference[oaicite:0]{index=0}
 ```
