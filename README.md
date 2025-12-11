@@ -300,7 +300,7 @@ The `upgrades/RAG_Chatbot` directory documents your **learning journey**:
    * Use graph traversal + neighborhoods to retrieve structured context
    * Fuse graph and vector signals for richer, more coherent answers
 
-4. **Upgrade 4 – Evaluation & Orchestration**
+4. **Upgrade 4 – Evaluation & Orchestration** (TODO)
 
    * Add simple evaluation sets (Q/A pairs, metrics)
    * Introduce self-refinement, groundedness checks, and routing/orchestration patterns
