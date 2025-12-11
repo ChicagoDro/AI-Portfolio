@@ -115,7 +115,7 @@ AI-Portfolio/
 └── upgrades/
     └── RAG_Chatbot/
         ├── 01-citations-and-provenance/
-        ├── 02-hybrid/
+        ├── 02-hybrid-search/
         ├── 03-graph-rag/
         └── 04-evaluation-and-orchestration/
 ```
@@ -160,7 +160,7 @@ Each folder is a **self-contained upgrade** that explains a concrete GenAI archi
 3. `03-graph-rag/`
 4. `04-evaluation-and-orchestration/`
 
-Use these to **tell the story** of how the system evolved, and to teach others.
+We use these to **tell the story** of how the system evolved, and to teach others.
 
 ---
 
@@ -275,17 +275,6 @@ Then open the URL printed in the console (typically `http://localhost:8501`) and
 * Try more complex queries (“Which packages include both suspension and exhaust upgrades?”)
 * Switch between / test hybrid and GraphRAG behaviors (depending on how you’ve wired the UI)
 
-### 6.2 Direct Python Execution (CLI, if enabled)
-
-If `chitown_custom_choppers_chatbot.py` or `main.py` exposes a CLI entrypoint, you can also run:
-
-```bash
-python src/RAG_Chatbot/chitown_custom_choppers_chatbot.py
-# or
-python main.py
-```
-
-Use this mode for quick tests, scripts, or integration into other tooling.
 
 ---
 
@@ -355,10 +344,4 @@ Based in Chicago, IL.
 
 Feel free to fork, explore, and adapt this project for your own AI portfolio.
 
-Welcome to **Chi-Town Custom Choppers** – where retrieval meets craftsmanship. 🏍️
-
-```
-
-If you want, I can also draft a short `CONTRIBUTING.md` or a minimal `UPGRADES.md` that just links to and describes each of the upgrade folders in more detail.
-::contentReference[oaicite:0]{index=0}
-```
+Welcome to **Chi-Town Custom Choppers** – where retrieval meets craftsmanship.

@@ -104,6 +104,7 @@ We added:
   ```python
   ENABLE_GRAPHRAG = True
   GRAPH_DEPTH = 1  # or 2+ depending on query complexity
+  ```
 ````
 
 ---
