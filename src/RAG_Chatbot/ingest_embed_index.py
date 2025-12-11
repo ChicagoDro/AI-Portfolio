@@ -29,10 +29,10 @@ from langchain_google_genai import GoogleGenerativeAIEmbeddings
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 # Input metadata describing PDFs
-METADATA_FILE_PATH = PROJECT_ROOT / "data" / "document-metadata.json"
+METADATA_FILE_PATH = PROJECT_ROOT / "data" / "Chitown_Custom_Choppers" / "document-metadata.json"
 
 # Directory that stores PDF files
-DATA_DIR = PROJECT_ROOT / "data" / "Chitown_Custom_Choppers"
+DATA_DIR = PROJECT_ROOT / "data" / "Chitown_Custom_Choppers" / "company_docs"
 
 # Provider (controls embeddings + index dir)
 PROVIDER = os.getenv("LLM_PROVIDER", "openai").lower()

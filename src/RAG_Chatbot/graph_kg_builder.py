@@ -31,7 +31,7 @@ from typing import Dict, Any, List
 # Project root: AI-Portfolio/
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
-GRAPH_DIR = PROJECT_ROOT / "data" / "graph"
+GRAPH_DIR = PROJECT_ROOT / "data" / "Chitown_Custom_Choppers"/ "graph"
 DEPARTMENTS_PATH = GRAPH_DIR / "departments.json"
 EMPLOYEES_PATH = GRAPH_DIR / "employees.json"
 SALES_PATH = GRAPH_DIR / "employee_mom_sales_q3_2024.json"

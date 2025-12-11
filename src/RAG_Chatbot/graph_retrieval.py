@@ -36,7 +36,7 @@ import networkx as nx
 # Project root: AI-Portfolio/
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
-GRAPH_DIR = PROJECT_ROOT / "data" / "graph"
+GRAPH_DIR = PROJECT_ROOT / "data" / "Chitown_Custom_Choppers" /"graph"
 GRAPH_OUTPUT_PATH = GRAPH_DIR / "graph_output.json"
 
 

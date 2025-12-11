@@ -2,7 +2,7 @@
   "documents": [
     {
       "file_name": "HR_Employee_Handbook.pdf",
-      "file_path": "data/Chitown_Custom_Choppers/HR_Employee_Handbook.pdf",
+      "file_path": "data/Chitown_Custom_Choppers/company_docs/HR_Employee_Handbook.pdf",
       "document_type": "HR Policy",
       "category": "Internal",
       "description": "Employee handbook outlining conduct standards, PTO rules, safety expectations, and disciplinary procedures.",
@@ -10,7 +10,7 @@
     },
     {
       "file_name": "HR_Onboarding_Packet.pdf",
-      "file_path": "data/Chitown_Custom_Choppers/HR_Onboarding_Packet.pdf",
+      "file_path": "data/Chitown_Custom_Choppers/company_docs/HR_Onboarding_Packet.pdf",
       "document_type": "HR Policy",
       "category": "Internal",
       "description": "New-hire onboarding packet covering first-week training, HR forms, workflow introductions, and safety acknowledgments.",
@@ -18,7 +18,7 @@
     },
     {
       "file_name": "HR_Benefits_Guide.pdf",
-      "file_path": "data/Chitown_Custom_Choppers/HR_Benefits_Guide.pdf",
+      "file_path": "data/Chitown_Custom_Choppers/company_docs/HR_Benefits_Guide.pdf",
       "document_type": "HR Policy",
       "category": "Internal",
       "description": "Benefits guide including healthcare eligibility, PTO accrual schedules, retirement options, and employee discount rules.",
@@ -26,7 +26,7 @@
     },
     {
       "file_name": "HR_Safety_Procedures.pdf",
-      "file_path": "data/Chitown_Custom_Choppers/HR_Safety_Procedures.pdf",
+      "file_path": "data/Chitown_Custom_Choppers/company_docs/HR_Safety_Procedures.pdf",
       "document_type": "HR Policy",
       "category": "Internal",
       "description": "Shop safety protocol describing PPE requirements, equipment restrictions, emergency tools, and incident reporting.",
@@ -34,7 +34,7 @@
     },
     {
       "file_name": "HR_Job_Descriptions.pdf",
-      "file_path": "data/Chitown_Custom_Choppers/HR_Job_Descriptions.pdf",
+      "file_path": "data/Chitown_Custom_Choppers/company_docs/HR_Job_Descriptions.pdf",
       "document_type": "HR Policy",
       "category": "Internal",
       "description": "Job descriptions for mechanics, fabricators, sales associates, and support staff with required skills and responsibilities.",
@@ -43,7 +43,7 @@
 
     {
       "file_name": "Customer_Return_Policy.pdf",
-      "file_path": "data/Chitown_Custom_Choppers/Customer_Return_Policy.pdf",
+      "file_path": "data/Chitown_Custom_Choppers/company_docs/Customer_Return_Policy.pdf",
       "document_type": "Customer Policy",
       "category": "External",
       "description": "Customer return policy describing 30-day returns, exclusions for custom builds, refund processing, and condition requirements.",
@@ -51,7 +51,7 @@
     },
     {
       "file_name": "Customer_Warranty_Policy.pdf",
-      "file_path": "data/Chitown_Custom_Choppers/Customer_Warranty_Policy.pdf",
+      "file_path": "data/Chitown_Custom_Choppers/company_docs/Customer_Warranty_Policy.pdf",
       "document_type": "Customer Policy",
       "category": "External",
       "description": "Warranty policy covering defects, exclusions, inspection steps, and manufacturer obligations.",
@@ -59,7 +59,7 @@
     },
     {
       "file_name": "Customer_Repair_Policy.pdf",
-      "file_path": "data/Chitown_Custom_Choppers/Customer_Repair_Policy.pdf",
+      "file_path": "data/Chitown_Custom_Choppers/company_docs/Customer_Repair_Policy.pdf",
       "document_type": "Customer Service",
       "category": "External",
       "description": "Repair policy outlining intake procedures, turnaround expectations, quoting, rush fees, and quality checks.",
@@ -67,7 +67,7 @@
     },
     {
       "file_name": "Customer_Shipping_Policy.pdf",
-      "file_path": "data/Chitown_Custom_Choppers/Customer_Shipping_Policy.pdf",
+      "file_path": "data/Chitown_Custom_Choppers/company_docs/Customer_Shipping_Policy.pdf",
       "document_type": "Customer Policy",
       "category": "External",
       "description": "Shipping policy describing packaging procedures, delivery regions, tracking, and damage-report timelines.",
@@ -75,7 +75,7 @@
     },
     {
       "file_name": "Customer_Privacy_Policy.pdf",
-      "file_path": "data/Chitown_Custom_Choppers/Customer_Privacy_Policy.pdf",
+      "file_path": "data/Chitown_Custom_Choppers/company_docs/Customer_Privacy_Policy.pdf",
       "document_type": "Customer Policy",
       "category": "External",
       "description": "Privacy policy describing how customer data is stored, used, secured, and how customers can request data deletion.",
@@ -84,7 +84,7 @@
 
     {
       "file_name": "Product_Frame_Guide.pdf",
-      "file_path": "data/Chitown_Custom_Choppers/Product_Frame_Guide.pdf",
+      "file_path": "data/Chitown_Custom_Choppers/company_docs/Product_Frame_Guide.pdf",
       "document_type": "Operations Manual",
       "category": "Internal",
       "description": "Guide to frame geometry, tubing materials, stretch options, and weight distribution considerations.",
@@ -92,7 +92,7 @@
     },
     {
       "file_name": "Product_Wheel_Tire_Guide.pdf",
-      "file_path": "data/Chitown_Custom_Choppers/Product_Wheel_Tire_Guide.pdf",
+      "file_path": "data/Chitown_Custom_Choppers/company_docs/Product_Wheel_Tire_Guide.pdf",
       "document_type": "Operations Manual",
       "category": "Internal",
       "description": "Wheel and tire compatibility guide with PSI charts, rim widths, and terrain recommendations.",
@@ -100,7 +100,7 @@
     },
     {
       "file_name": "Product_Brake_System_Manual.pdf",
-      "file_path": "data/Chitown_Custom_Choppers/Product_Brake_System_Manual.pdf",
+      "file_path": "data/Chitown_Custom_Choppers/company_docs/Product_Brake_System_Manual.pdf",
       "document_type": "Operations Manual",
       "category": "Internal",
       "description": "Manual for disc and rim brake installation, adjustments, safety checks, and troubleshooting.",
@@ -108,7 +108,7 @@
     },
     {
       "file_name": "Product_Gear_Shifter_Manual.pdf",
-      "file_path": "data/Chitown_Custom_Choppers/Product_Gear_Shifter_Manual.pdf",
+      "file_path": "data/Chitown_Custom_Choppers/company_docs/Product_Gear_Shifter_Manual.pdf",
       "document_type": "Operations Manual",
       "category": "Internal",
       "description": "Guide explaining derailleur indexing, gear calibration, cable routing, and shifting diagnostics.",
@@ -116,7 +116,7 @@
     },
     {
       "file_name": "Product_Measuring_Guide.pdf",
-      "file_path": "data/Chitown_Custom_Choppers/Product_Measuring_Guide.pdf",
+      "file_path": "data/Chitown_Custom_Choppers/company_docs/Product_Measuring_Guide.pdf",
       "document_type": "Operations Manual",
       "category": "Internal",
       "description": "Measurement guide for sizing riders to frames, handlebars, crank arms, and proper riding posture.",
@@ -124,7 +124,7 @@
     },
     {
       "file_name": "Product_Paint_Finish_Catalog.pdf",
-      "file_path": "data/Chitown_Custom_Choppers/Product_Paint_Finish_Catalog.pdf",
+      "file_path": "data/Chitown_Custom_Choppers/company_docs/Product_Paint_Finish_Catalog.pdf",
       "document_type": "Marketing",
       "category": "External",
       "description": "Catalog of powder-coating and custom paint finishes with color codes and estimated lead times.",
@@ -132,7 +132,7 @@
     },
     {
       "file_name": "Product_Customization_Options.pdf",
-      "file_path": "data/Chitown_Custom_Choppers/Product_Customization_Options.pdf",
+      "file_path": "data/Chitown_Custom_Choppers/company_docs/Product_Customization_Options.pdf",
       "document_type": "Customer Service",
       "category": "External",
       "description": "Customization options including handlebars, seats, lighting kits, fenders, and themed accessories.",
@@ -140,7 +140,7 @@
     },
     {
       "file_name": "Product_Parts_Catalog.pdf",
-      "file_path": "data/Chitown_Custom_Choppers/Product_Parts_Catalog.pdf",
+      "file_path": "data/Chitown_Custom_Choppers/company_docs/Product_Parts_Catalog.pdf",
       "document_type": "Operations Manual",
       "category": "Internal",
       "description": "SKU-based parts catalog including rims, drivetrains, grips, forks, accessories, and warranty details.",
@@ -149,7 +149,7 @@
 
     {
       "file_name": "Finance_Monthly_Sales_Report.pdf",
-      "file_path": "data/Chitown_Custom_Choppers/Finance_Monthly_Sales_Report.pdf",
+      "file_path": "data/Chitown_Custom_Choppers/company_docs/Finance_Monthly_Sales_Report.pdf",
       "document_type": "Financial Data",
       "category": "Internal",
       "description": "Monthly report detailing revenue, category breakdowns, unit sales, seasonal patterns, and recommendations.",
@@ -157,7 +157,7 @@
     },
     {
       "file_name": "Finance_Quarterly_Inventory_Report.pdf",
-      "file_path": "data/Chitown_Custom_Choppers/Finance_Quarterly_Inventory_Report.pdf",
+      "file_path": "data/Chitown_Custom_Choppers/company_docs/Finance_Quarterly_Inventory_Report.pdf",
       "document_type": "Financial Data",
       "category": "Internal",
       "description": "Inventory audit showing stock turnover, shrinkage, supplier delays, and recommended reorder quantities.",
@@ -165,7 +165,7 @@
     },
     {
       "file_name": "Finance_Supplier_Contracts.pdf",
-      "file_path": "data/Chitown_Custom_Choppers/Finance_Supplier_Contracts.pdf",
+      "file_path": "data/Chitown_Custom_Choppers/company_docs/Finance_Supplier_Contracts.pdf",
       "document_type": "Financial Data",
       "category": "Internal",
       "description": "Supplier contract summaries covering pricing tiers, delivery schedules, MOQs, and performance obligations.",
@@ -173,7 +173,7 @@
     },
     {
       "file_name": "Finance_Operations_Budget.pdf",
-      "file_path": "data/Chitown_Custom_Choppers/Finance_Operations_Budget.pdf",
+      "file_path": "data/Chitown_Custom_Choppers/company_docs/Finance_Operations_Budget.pdf",
       "document_type": "Financial Data",
       "category": "Internal",
       "description": "Annual budget including payroll, tooling, rent, consumables, marketing, and revenue projections.",
@@ -182,7 +182,7 @@
 
     {
       "file_name": "Marketing_Holiday_Promo.pdf",
-      "file_path": "data/Chitown_Custom_Choppers/Marketing_Holiday_Promo.pdf",
+      "file_path": "data/Chitown_Custom_Choppers/company_docs/Marketing_Holiday_Promo.pdf",
       "document_type": "Marketing",
       "category": "External",
       "description": "Holiday promotion offering 20% off parts, 15% off labor, $100 build deposits, plus free gifts. Delivered 17.8% YoY December sales growth and 4.2x ROI.",
@@ -190,7 +190,7 @@
     },
     {
       "file_name": "Marketing_Event_Flyer.pdf",
-      "file_path": "data/Chitown_Custom_Choppers/Marketing_Event_Flyer.pdf",
+      "file_path": "data/Chitown_Custom_Choppers/company_docs/Marketing_Event_Flyer.pdf",
       "document_type": "Marketing",
       "category": "External",
       "description": "Spring community ride featuring $25 tune-ups and 10% accessory discounts. Draws 150–220 riders and converts 34% into merchandise sales.",
@@ -198,7 +198,7 @@
     },
     {
       "file_name": "Marketing_Custom_Build_Showcase.pdf",
-      "file_path": "data/Chitown_Custom_Choppers/Marketing_Custom_Build_Showcase.pdf",
+      "file_path": "data/Chitown_Custom_Choppers/company_docs/Marketing_Custom_Build_Showcase.pdf",
       "document_type": "Marketing",
       "category": "External",
       "description": "Quarterly showcase of featured custom builds driving a 22% increase in consultations and significant upsell lift for powder coat and tire packages.",
@@ -206,7 +206,7 @@
     },
     {
       "file_name": "Marketing_Social_Media_Strategy.pdf",
-      "file_path": "data/Chitown_Custom_Choppers/Marketing_Social_Media_Strategy.pdf",
+      "file_path": "data/Chitown_Custom_Choppers/company_docs/Marketing_Social_Media_Strategy.pdf",
       "document_type": "Marketing",
       "category": "Internal",
       "description": "Social strategy containing 10–25% promotional content guidance, influencer partnerships, CAC reduction to $18.30, and 3.1x ROAS.",
@@ -215,7 +215,7 @@
 
     {
       "file_name": "Org_Chart.pdf",
-      "file_path": "data/Chitown_Custom_Choppers/Org_Chart.pdf",
+      "file_path": "data/Chitown_Custom_Choppers/company_docs/Org_Chart.pdf",
       "document_type": "HR/Org Structure",
       "category": "Internal",
       "description": "Company organizational chart listing CEO, directors, teams, and reporting structure for GraphRAG hierarchy extraction.",
@@ -223,7 +223,7 @@
     },
     {
       "file_name": "Employee_MoM_Sales_Q3_2024.pdf",
-      "file_path": "data/Chitown_Custom_Choppers/Employee_MoM_Sales_Q3_2024.pdf",
+      "file_path": "data/Chitown_Custom_Choppers/company_docs/Employee_MoM_Sales_Q3_2024.pdf",
       "document_type": "Financial Data",
       "category": "Internal",
       "description": "Month-over-month sales data for July–September 2024 by employee, aligned to Q3 totals. Used for GraphRAG performance and relationship analysis.",

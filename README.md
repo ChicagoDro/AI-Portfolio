@@ -106,13 +106,14 @@ AI-Portfolio/
 │       ├── ingest_embed_index.py         # Build vector + graph indices from data/
 │       ├── chitown_custom_choppers_chatbot.py  # Main chatbot / Streamlit app
 │       ├── graph_kg_builder.py          # Knowledge graph construction (GraphRAG)
-│       ├── graph_retrieval.py           # Graph-based + hybrid retrieval helpers
-│       └── config.py                    # Central configuration (models, paths, etc.)
+│       └── graph_retrieval.py           # Graph-based + hybrid retrieval helpers
 ├── data/
-│   ├── document-metadata.json           # Chunk + document metadata
-│   └── Chitown_Custom_Choppers/        # Domain docs (LLM-generated shop data)
+│   └── Chitown_Custom_Choppers/       
+│       └── company_docs/                  # Domain docs (shop data)
+│       └── graph/                         # Domain docs (orgchart) + edge/node files
+│       └── document-metadata.json         # Chunk + document metadata
 ├── indices/
-│   └── faiss_chitowncustomchoppers_index/  # Generated vector + graph indices
+│   └── faiss_chitowncustomchoppers_index_{LLM} /  # Generated vector + graph indices
 ├── notebooks/                           # Scratch space / experiments
 └── upgrades/
     └── RAG_Chatbot/
