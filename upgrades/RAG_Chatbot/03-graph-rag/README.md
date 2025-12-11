@@ -105,8 +105,6 @@ We added:
   ENABLE_GRAPHRAG = True
   GRAPH_DEPTH = 1  # or 2+ depending on query complexity
   ```
-````
-
 ---
 
 ### **2.4 Added Documentation + Architecture Notes**
