@@ -1,7 +1,17 @@
 import os
 from typing import Dict, Any, List, Tuple
 from operator import itemgetter
+
+import sys
 from pathlib import Path
+
+import re
+
+# Ensure project root is on sys.path so `src` can be imported
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.append(str(PROJECT_ROOT))
+
 
 from dotenv import load_dotenv
 import streamlit as st
@@ -14,19 +24,27 @@ from langchain_core.output_parsers import StrOutputParser, JsonOutputParser
 
 from pydantic import BaseModel, Field
 
-# --- Vector Store & LLM ---
+# --- Vector Store & Embeddings ---
 from langchain_community.vectorstores import FAISS
-from langchain_community.retrievers import BM25Retriever
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+
+# --- GraphRAG utilities ---
+from src.RAG_Chatbot.graph_retrieval import (
+    load_graph,
+    list_people,
+    format_org_summary,
+    format_person_sales_summary,
+    get_q3_2024_total_sales,
+)
 
 load_dotenv()
 
-# ----------------------------- CONFIG ------------------------------------------------
+# ----------------------------- CONFIG ---------------------------------------------
 
-# Script lives at: src/RAG_Chatbot/chitown_custom_choppers_chatbot.py
+# Dynamically resolve repo root
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
-# Directory where FAISS index was saved by ingest_embed_index.py
+# Directory where FAISS index is saved/loaded
 INDEX_DIR = PROJECT_ROOT / "indices" / "faiss_chitowncustomchoppers_index"
 
 
@@ -37,7 +55,7 @@ def get_llm():
     """
     Return a ChatOpenAI LLM configured for either:
       - OpenAI (default)
-      - Grok (OpenAI-compatible endpoint, if configured).
+      - Grok (OpenAI-compatible endpoint, if you configure it)
     Controlled via env var: LLM_PROVIDER in {"openai", "grok"}.
     """
     provider = os.getenv("LLM_PROVIDER", "openai").lower()
@@ -70,16 +88,16 @@ class DocumentCategory(BaseModel):
     category: str = Field(
         description=(
             "The most relevant document_type category for answering this query. "
-            "Must be one of: 'HR Policy', 'Financial Data', 'HR/Org Structure, 'Customer Policy', 'Customer Service', "
-            "'Operations Manual', 'Marketing', or 'Other'."
+            "Must be one of: 'HR Policy', 'Customer Policy', 'Customer Service', "
+            " 'Operations Manual', 'Marketing', or 'Other'."
         )
     )
 
 
-# ----------------------------- RAG CHAIN SETUP (HYBRID) --------------------------
+# ----------------------------- RAG CHAIN SETUP -----------------------------------
 
 
-@st.cache_resource(show_spinner="Loading vector index, BM25, and LLM…")
+@st.cache_resource(show_spinner="Loading vector index and LLM…")
 def setup_rag_chain():
     # 1. Load vector store with OpenAI embeddings
     openai_api_key = os.getenv("OPENAI_API_KEY")
@@ -92,29 +110,17 @@ def setup_rag_chain():
         model=os.getenv("EMBEDDING_MODEL", "text-embedding-3-small")
     )
 
-    if not INDEX_DIR.exists():
+    if not os.path.exists(INDEX_DIR):
         raise FileNotFoundError(
             f"Vector index directory '{INDEX_DIR}' not found. "
             f"Run ingest_embed_index.py first."
         )
 
-    loaded_vectorstore: FAISS = FAISS.load_local(
+    loaded_vectorstore = FAISS.load_local(
         INDEX_DIR,
         embedding_model,
-        allow_dangerous_deserialization=True,  # OK for local/dev
+        allow_dangerous_deserialization=True,  # ok for local/dev
     )
-
-    # Build BM25 retriever from the documents stored in the FAISS docstore
-    # (this avoids re-reading PDFs).
-    docstore_dict = getattr(loaded_vectorstore.docstore, "_dict", {})
-    base_docs: List[Document] = list(docstore_dict.values())
-
-    if not base_docs:
-        raise RuntimeError("No documents found in FAISS docstore for BM25 construction.")
-
-    bm25_retriever = BM25Retriever.from_documents(base_docs)
-    # Optionally tweak how many docs BM25 returns
-    bm25_retriever.k = 8
 
     llm = get_llm()
 
@@ -138,8 +144,6 @@ def setup_rag_chain():
                     "  - Customer Service\n"
                     "  - Operations Manual\n"
                     "  - Marketing\n"
-                    "  - Financial Data\n"
-                    "  - HR/Org Structure\n"
                     "  - Other\n\n"
                     "Return ONLY a JSON object following these instructions:\n"
                     "{format_instructions}"
@@ -157,15 +161,13 @@ def setup_rag_chain():
         "Customer Policy",
         "Customer Service",
         "Operations Manual",
-        "Financial Data",
-        "HR/Org Structure",
         "Marketing",
     }
 
     # ---------------- Helper: build filter from classification ----------------
 
     def build_metadata_filter(classifier_output: Any) -> Dict[str, Any] | None:
-        """Convert classifier output into a FAISS/BM25 metadata filter."""
+        """Convert classifier output into a FAISS metadata filter."""
         if isinstance(classifier_output, DocumentCategory):
             category = classifier_output.category
         elif isinstance(classifier_output, dict):
@@ -182,170 +184,56 @@ def setup_rag_chain():
             print("[DEBUG] Unknown or missing category; using unfiltered search.")
             return None
 
-    # ---------------- Helper: filter docs by metadata -------------------------
+    # ---------------- Helper: retrieve docs with scores + build context --------
 
-    def matches_filter(doc: Document, metadata_filter: Dict[str, Any] | None) -> bool:
-        if not metadata_filter:
-            return True
-        for k, v in metadata_filter.items():
-            if doc.metadata.get(k) != v:
-                return False
-        return True
-
-    # ---------------- Helper: HYBRID RETRIEVAL (FAISS + BM25) -----------------
-
-    def hybrid_retrieve_with_scores(inputs: Dict[str, Any]) -> Dict[str, Any]:
+    def retrieve_with_scores(inputs: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Hybrid retrieval step:
-        - Dense retrieval via FAISS similarity_search_with_score.
-        - Sparse retrieval via BM25Retriever.
-        - Metadata filter applied to both channels.
-        - Scores normalized and combined into a hybrid score.
+        Upgraded retrieval step:
+        - Uses similarity_search_with_score (so we keep scores)
+        - Applies optional metadata filter from classification
         - Returns:
             - query
-            - context (string for LLM)
-            - sources (rich provenance, including dense/sparse/hybrid scores).
+            - context (string to feed to LLM)
+            - sources (list of provenance dicts for UI)
         """
         query = inputs["query"]
         classification = inputs["classification"]
 
         metadata_filter = build_metadata_filter(classification)
 
-        # --- Dense retrieval (FAISS) ---
-        dense_kwargs: Dict[str, Any] = {"k": 5}
+        search_kwargs: Dict[str, Any] = {"k": 3}
         if metadata_filter:
-            dense_kwargs["filter"] = metadata_filter
+            search_kwargs["filter"] = metadata_filter
 
-        dense_docs_and_scores: List[Tuple[Document, float]] = (
-            loaded_vectorstore.similarity_search_with_score(query, **dense_kwargs)
+        print(f"[DEBUG] search_kwargs: {search_kwargs}")
+
+        # Directly use similarity_search_with_score to get scores
+        docs_and_scores: List[Tuple[Document, float]] = (
+            loaded_vectorstore.similarity_search_with_score(
+                query, **search_kwargs
+            )
         )
 
         print(
-            f"[DEBUG][DENSE] Retrieved {len(dense_docs_and_scores)} documents for query '{query}'."
+            f"[DEBUG] Retrieved {len(docs_and_scores)} documents for query '{query}'."
         )
 
-        # --- Sparse retrieval (BM25) ---
-        # BM25Retriever in your setup behaves like a Runnable, so we use .invoke()
-        try:
-            bm25_candidates: List[Document] = bm25_retriever.get_relevant_documents(query)
-        except AttributeError:
-            # Fallback for retrievers implemented as LCEL runnables
-            bm25_candidates: List[Document] = bm25_retriever.invoke(query)
-
-        # Apply metadata filter post-hoc to BM25 results
-        sparse_docs: List[Document] = [
-            d for d in bm25_candidates if matches_filter(d, metadata_filter)
-        ]
-
-
-        print(
-            f"[DEBUG][SPARSE] Retrieved {len(sparse_docs)} BM25 documents before/after filtering."
-        )
-
-        # --- Build lookup maps per doc identity (file_name + page + source) ---
-
-        def doc_key(doc: Document) -> Tuple[Any, Any, Any]:
-            return (
-                doc.metadata.get("file_name"),
-                doc.metadata.get("page"),
-                doc.metadata.get("source"),
-            )
-
-        dense_map: Dict[Tuple[Any, Any, Any], Dict[str, Any]] = {}
-        for doc, distance in dense_docs_and_scores:
-            key = doc_key(doc)
-            dense_map[key] = {
-                "doc": doc,
-                "dense_distance": float(distance),
-            }
-
-        sparse_map: Dict[Tuple[Any, Any, Any], Dict[str, Any]] = {}
-        # Use rank-based pseudo-scores for BM25 (higher rank → smaller score).
-        for rank, doc in enumerate(sparse_docs):
-            key = doc_key(doc)
-            # Simple decreasing score: 1.0, 0.5, 0.33, ...
-            sparse_score = 1.0 / (rank + 1)
-            sparse_map[key] = {
-                "doc": doc,
-                "sparse_score": sparse_score,
-            }
-
-        # --- Combine keys and compute hybrid scores ---------------------------
-
-        all_keys = set(dense_map.keys()) | set(sparse_map.keys())
-        combined: List[Dict[str, Any]] = []
-
-        for key in all_keys:
-            dense_entry = dense_map.get(key)
-            sparse_entry = sparse_map.get(key)
-
-            if dense_entry:
-                dense_distance = dense_entry["dense_distance"]
-                dense_conf = 1.0 / (1.0 + dense_distance)  # lower distance => higher confidence
-            else:
-                dense_distance = None
-                dense_conf = 0.0
-
-            sparse_score = sparse_entry["sparse_score"] if sparse_entry else 0.0
-
-            # Simple normalization: both already ~[0,1]
-            dense_norm = dense_conf
-            sparse_norm = sparse_score
-
-            # Hybrid weighting (you can tune these)
-            alpha = 0.6  # dense
-            beta = 0.4   # sparse
-
-            hybrid_score = alpha * dense_norm + beta * sparse_norm
-
-            # Prefer doc object from dense; fallback to sparse
-            doc = (
-                dense_entry["doc"]
-                if dense_entry is not None
-                else sparse_entry["doc"]
-            )
-
-            combined.append(
-                {
-                    "doc": doc,
-                    "dense_distance": dense_distance,
-                    "dense_conf": dense_conf,
-                    "sparse_score": sparse_score,
-                    "hybrid_score": hybrid_score,
-                }
-            )
-
-        # Sort by hybrid_score descending (higher = better)
-        combined_sorted = sorted(
-            combined, key=lambda x: x["hybrid_score"], reverse=True
-        )
-
-        # Limit final number of chunks
-        top_k_final = 5
-        combined_sorted = combined_sorted[:top_k_final]
-
-        # --- Build context string + source metadata ---------------------------
-
+        # Build context string + source metadata
         context_chunks: List[str] = []
         sources: List[Dict[str, Any]] = []
 
-        for i, entry in enumerate(combined_sorted):
-            doc = entry["doc"]
+        for i, (doc, score) in enumerate(docs_and_scores):
             file_name = doc.metadata.get("file_name", "Unknown")
             doc_type = doc.metadata.get("document_type", "Unknown")
             page = doc.metadata.get("page", "Unknown")
+            # FAISS scores are distances; lower = closer. Convert to a confidence-ish score:
+            # quick heuristic: confidence = 1 / (1 + distance)
+            distance = float(score)
+            confidence = 1.0 / (1.0 + distance)
 
-            dense_distance = entry["dense_distance"]
-            dense_conf = entry["dense_conf"]
-            sparse_score = entry["sparse_score"]
-            hybrid_score = entry["hybrid_score"]
-
-            # Human-readable context header
             context_chunks.append(
                 f"[Source {i+1} | {file_name} | type={doc_type} | page={page} | "
-                f"dense_distance={dense_distance if dense_distance is not None else 'NA'} | "
-                f"dense_conf≈{dense_conf:.3f} | sparse≈{sparse_score:.3f} | "
-                f"hybrid≈{hybrid_score:.3f}]\n"
+                f"distance={distance:.4f} | conf≈{confidence:.3f}]\n"
                 f"{doc.page_content}"
             )
 
@@ -355,10 +243,8 @@ def setup_rag_chain():
                     "file_name": file_name,
                     "document_type": doc_type,
                     "page": page,
-                    "dense_distance": dense_distance,
-                    "dense_conf": dense_conf,
-                    "sparse_score": sparse_score,
-                    "hybrid_score": hybrid_score,
+                    "distance": distance,
+                    "confidence": confidence,
                 }
             )
 
@@ -374,7 +260,7 @@ def setup_rag_chain():
             "sources": sources,
         }
 
-    # ---------------- Answer prompt (RAG with context) -----------------------
+    # ---------------- Answer prompt (RAG with context) ---------------------
 
     ANSWER_PROMPT = ChatPromptTemplate.from_messages(
         [
@@ -398,21 +284,217 @@ def setup_rag_chain():
         ]
     )
 
-    # ---------------- Final LCEL chain (answer + sources) --------------------
+    # ---------------- Final LCEL chain (answer + sources) ----------------------
 
     rag_chain = (
         {
             "query": RunnablePassthrough(),
             "classification": {"query": RunnablePassthrough()} | classification_chain,
         }
-        | RunnableLambda(hybrid_retrieve_with_scores)
+        | RunnableLambda(retrieve_with_scores)
         | {
+            # Run LLM on {query, context}
             "answer": ANSWER_PROMPT | llm | StrOutputParser(),
+            # Pass through sources untouched for UI
             "sources": itemgetter("sources"),
         }
     )
 
     return rag_chain
+
+
+# ----------------------------- GRAPH RAG SETUP ------------------------------------
+
+
+@st.cache_resource(show_spinner="Loading knowledge graph…")
+def load_knowledge_graph():
+    """Load the knowledge graph from data/graph/graph_output.json."""
+    return load_graph()
+
+
+GRAPH_KEYWORDS = [
+    "org chart",
+    "organization",
+    "organisational structure",
+    "org structure",
+    "who works there",
+    "who works at",
+    "who reports to",
+    "reports to",
+    "manager",
+    "direct reports",
+    "team",
+    "department",
+    "headcount",
+    "q3 sales",
+    "quarter 3 sales",
+    "monthly sales",
+    "sales by employee",
+    "sales by person",
+]
+
+
+def _normalize_for_routing(text: str) -> str:
+    """
+    Lowercase, remove apostrophes/punctuation, collapse spaces.
+    This makes 'who's the CEO' and 'who is the ceo?' look similar.
+    """
+    text = text.lower()
+    # remove apostrophes like who's → whos
+    text = re.sub(r"[’']", "", text)
+    # replace non-alphanumeric with space
+    text = re.sub(r"[^a-z0-9\s]", " ", text)
+    # collapse multiple spaces
+    text = re.sub(r"\s+", " ", text).strip()
+    return text
+
+
+ORG_TOKENS = {
+    "org", "organization", "structure", "department", "team", "orgchart",
+}
+PEOPLE_TOKENS = {
+    "who", "employee", "employees", "people", "staff", "manager", "managers",
+    "report", "reports", "reporting", "headcount", "ceo", "founder", "owner",
+}
+SALES_TOKENS = {
+    "sales", "revenue", "q3", "quarter", "monthly",
+}
+
+
+def is_graph_query(user_input: str) -> bool:
+    """
+    Fuzzy-ish router for graph questions.
+
+    Heuristics:
+    - If the question is about org structure / people / roles / headcount → graph
+    - If the question is about Q3 / monthly sales by person or overall → graph
+    """
+    raw = user_input
+    text = _normalize_for_routing(user_input)
+    tokens = set(text.split())
+
+    # Debug so you can see what the router is doing
+    print(f"[DEBUG][ROUTER] normalized='{text}', tokens={tokens}")
+
+    # 1) Direct “org-ish” intent: structure / departments / teams / headcount
+    if ("org" in tokens and "chart" in tokens) or ("structure" in tokens and "org" in tokens):
+        print(f"[DEBUG][ROUTER] GraphRAG (org+chart/structure) for: {raw!r}")
+        return True
+
+    if tokens & ORG_TOKENS and tokens & PEOPLE_TOKENS:
+        # e.g. "organization structure", "team structure", "department staff"
+        print(f"[DEBUG][ROUTER] GraphRAG (org+people tokens) for: {raw!r}")
+        return True
+
+    # 2) “Who” questions about people or roles
+    if "who" in tokens and (tokens & {"works", "work", "reports", "manages", "manager", "managers", "ceo", "founder", "owner"}):
+        # catches: "who is the ceo", "who's the ceo", "who works here", "who reports to rosa"
+        print(f"[DEBUG][ROUTER] GraphRAG (who+people) for: {raw!r}")
+        return True
+
+    if "ceo" in tokens or "founder" in tokens or "owner" in tokens:
+        print(f"[DEBUG][ROUTER] GraphRAG (role=ceo/founder/owner) for: {raw!r}")
+        return True
+
+    # 3) Headcount / how many people / employees
+    if "how" in tokens and ("many" in tokens or "total" in tokens) and (tokens & {"people", "employees", "staff", "headcount"}):
+        print(f"[DEBUG][ROUTER] GraphRAG (headcount) for: {raw!r}")
+        return True
+
+    # 4) Sales questions (Q3 / monthly / by employee)
+    if tokens & SALES_TOKENS and "sales" in tokens:
+        # e.g. "q3 sales", "monthly sales", "sales by employee"
+        print(f"[DEBUG][ROUTER] GraphRAG (sales) for: {raw!r}")
+        return True
+
+    print(f"[DEBUG][ROUTER] NOT routing to GraphRAG for: {raw!r}")
+    return False
+
+
+
+def answer_with_graphrag(user_query: str, G) -> Dict[str, Any]:
+    """
+    Handle org / people / sales questions using the knowledge graph,
+    then let the LLM turn the graph facts into a natural language answer.
+
+    Returns:
+        {
+          "answer": str,
+          "sources": []   # kept empty for now, so UI won't show the provenance block
+        }
+    """
+    q = user_query.lower()
+
+    # 1) Person-specific sales / info if we spot a known name
+    person_id = None
+    for person in list_people(G):
+        name_lower = person["name"].lower()
+        if name_lower in q:
+            person_id = person["id"]
+            break
+
+    if person_id:
+        graph_context = format_person_sales_summary(G, person_id)
+    # 2) Org structure questions
+    elif (
+        "org chart" in q
+        or "org structure" in q
+        or "organization" in q
+        or "who works there" in q
+        or "headcount" in q
+        or "who works at" in q
+    ):
+        graph_context = format_org_summary(G)
+    # 3) Q3 sales / total sales questions
+    elif "q3" in q and "sales" in q or "total sales" in q:
+        total = get_q3_2024_total_sales(G)
+        graph_context = (
+            f"Total Q3 2024 sales for Chitown Custom Choppers were "
+            f"${total:,.2f} based on all SalesMetric nodes in the graph."
+        )
+    else:
+        # Fallback: org summary is a safe default
+        graph_context = format_org_summary(G)
+
+    # Use a small prompt tailored for graph-based answers
+    graph_prompt = ChatPromptTemplate.from_messages(
+        [
+            (
+                "system",
+                (
+                    "You are an internal assistant for Chitown Custom Choppers. "
+                    "You are given structured information from the company's "
+                    "knowledge graph (org chart, departments, Q3 2024 sales).\n\n"
+                    "Use ONLY this information when answering. If the graph context "
+                    "does not clearly answer the question, say that the information "
+                    "is not available in the current company graph."
+                ),
+            ),
+            (
+                "human",
+                "User question:\n{query}\n\n"
+                "Graph context:\n{graph_context}\n\n"
+                "Provide a clear, concise answer grounded only in the graph context."
+            ),
+        ]
+    )
+
+    llm = get_llm()
+    chain = graph_prompt | llm | StrOutputParser()
+
+    answer_text = chain.invoke(
+        {
+            "query": user_query,
+            "graph_context": graph_context,
+        }
+    )
+
+    # For now, we don't show a 'Sources' block for graph answers
+    # You could later add explicit graph provenance here.
+    return {
+        "answer": answer_text,
+        "sources": [],
+    }
 
 
 # ----------------------------- STREAMLIT UI ----------------------------------------
@@ -422,10 +504,17 @@ def main():
     st.set_page_config(page_title="Chitown Custom Choppers RAG Bot", page_icon="🛠️")
     st.title("🛠️ Chitown Custom Choppers – Shop Knowledge Assistant")
 
+    # Initialize RAG and GraphRAG resources
     try:
         rag_chain = setup_rag_chain()
     except Exception as e:
         st.error(f"Error initializing RAG system: {e}")
+        st.stop()
+
+    try:
+        knowledge_graph = load_knowledge_graph()
+    except Exception as e:
+        st.error(f"Error loading knowledge graph: {e}")
         st.stop()
 
     if "messages" not in st.session_state:
@@ -438,7 +527,7 @@ def main():
 
     # Chat input
     prompt_input = st.chat_input(
-        "Ask about HR policies, returns, builds, store operations, or promotions…"
+        "Ask about HR policies, returns, builds, store operations, org structure, or Q3 sales…"
     )
     if not prompt_input:
         return
@@ -450,9 +539,12 @@ def main():
 
     # Generate and show assistant response
     with st.chat_message("assistant"):
-        with st.spinner("Checking the Chitown Custom Choppers docs…"):
+        with st.spinner("Consulting Chitown Custom Choppers knowledge…"):
             try:
-                result = rag_chain.invoke(prompt_input)
+                if is_graph_query(prompt_input):
+                    result = answer_with_graphrag(prompt_input, knowledge_graph)
+                else:
+                    result = rag_chain.invoke(prompt_input)
             except Exception as e:
                 st.error(f"Error generating response: {e}")
                 return
@@ -462,22 +554,15 @@ def main():
 
             st.markdown(answer)
 
-            # Show provenance block
+            # Show provenance block for vector-RAG answers
             if sources:
                 st.markdown("---")
                 st.markdown("**Sources used:**")
                 for s in sources:
-                    dense_part = (
-                        f"dense_distance={s['dense_distance']:.4f}, "
-                        f"dense_conf≈{s['dense_conf']:.3f}"
-                        if s["dense_distance"] is not None
-                        else "dense_distance=NA, dense_conf≈0.000"
-                    )
                     st.markdown(
                         f"- Source {s['id']}: `{s['file_name']}` "
                         f"(type: {s['document_type']}, page: {s['page']}, "
-                        f"{dense_part}, sparse≈{s['sparse_score']:.3f}, "
-                        f"hybrid≈{s['hybrid_score']:.3f})"
+                        f"distance={s['distance']:.4f}, conf≈{s['confidence']:.3f})"
                     )
 
     # Store assistant answer in history (just the text, not the sources block)

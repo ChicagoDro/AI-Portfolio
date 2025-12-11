@@ -1,0 +1,664 @@
+{
+  "nodes": [
+    {
+      "id": "dept_custom_builds",
+      "type": "Department",
+      "name": "Custom Builds"
+    },
+    {
+      "id": "dept_repairs",
+      "type": "Department",
+      "name": "Repairs"
+    },
+    {
+      "id": "dept_retail",
+      "type": "Department",
+      "name": "Retail & Merch"
+    },
+    {
+      "id": "person_peter_tamisin",
+      "type": "Person",
+      "name": "Peter \"Lil Dro\" Tamisin",
+      "role": "CEO",
+      "department_id": null
+    },
+    {
+      "id": "person_rosa_martinez",
+      "type": "Person",
+      "name": "Rosa Martinez",
+      "role": "Director of Custom Builds",
+      "department_id": "dept_custom_builds"
+    },
+    {
+      "id": "person_jonas_reed",
+      "type": "Person",
+      "name": "Jonas Reed",
+      "role": "Director of Repairs",
+      "department_id": "dept_repairs"
+    },
+    {
+      "id": "person_samira_patel",
+      "type": "Person",
+      "name": "Samira Patel",
+      "role": "Director of Retail & Merch",
+      "department_id": "dept_retail"
+    },
+    {
+      "id": "person_derek_vaughn",
+      "type": "Person",
+      "name": "Derek Vaughn",
+      "role": "Senior Fabricator",
+      "department_id": "dept_custom_builds"
+    },
+    {
+      "id": "person_lina_chavez",
+      "type": "Person",
+      "name": "Lina Chavez",
+      "role": "Frame Builder",
+      "department_id": "dept_custom_builds"
+    },
+    {
+      "id": "person_marco_diaz",
+      "type": "Person",
+      "name": "Marco Diaz",
+      "role": "Lead Mechanic",
+      "department_id": "dept_repairs"
+    },
+    {
+      "id": "person_priya_sharma",
+      "type": "Person",
+      "name": "Priya Sharma",
+      "role": "Mechanic",
+      "department_id": "dept_repairs"
+    },
+    {
+      "id": "person_ron_banks",
+      "type": "Person",
+      "name": "Ron Banks",
+      "role": "Mechanic",
+      "department_id": "dept_repairs"
+    },
+    {
+      "id": "person_alyssa_kent",
+      "type": "Person",
+      "name": "Alyssa Kent",
+      "role": "Sales Associate",
+      "department_id": "dept_retail"
+    },
+    {
+      "id": "person_henry_cho",
+      "type": "Person",
+      "name": "Henry Cho",
+      "role": "Sales Associate",
+      "department_id": "dept_retail"
+    },
+    {
+      "id": "person_talia_boyd",
+      "type": "Person",
+      "name": "Talia Boyd",
+      "role": "Customer Support",
+      "department_id": "dept_retail"
+    },
+    {
+      "id": "person_jordan_fields",
+      "type": "Person",
+      "name": "Jordan Fields",
+      "role": "Customer Support",
+      "department_id": "dept_retail"
+    },
+    {
+      "id": "sales_person_derek_vaughn_2024-07",
+      "type": "SalesMetric",
+      "person_id": "person_derek_vaughn",
+      "month": "07",
+      "year": 2024,
+      "amount_usd": 4200.0
+    },
+    {
+      "id": "sales_person_derek_vaughn_2024-08",
+      "type": "SalesMetric",
+      "person_id": "person_derek_vaughn",
+      "month": "08",
+      "year": 2024,
+      "amount_usd": 4900.0
+    },
+    {
+      "id": "sales_person_derek_vaughn_2024-09",
+      "type": "SalesMetric",
+      "person_id": "person_derek_vaughn",
+      "month": "09",
+      "year": 2024,
+      "amount_usd": 5300.0
+    },
+    {
+      "id": "sales_person_lina_chavez_2024-07",
+      "type": "SalesMetric",
+      "person_id": "person_lina_chavez",
+      "month": "07",
+      "year": 2024,
+      "amount_usd": 3800.0
+    },
+    {
+      "id": "sales_person_lina_chavez_2024-08",
+      "type": "SalesMetric",
+      "person_id": "person_lina_chavez",
+      "month": "08",
+      "year": 2024,
+      "amount_usd": 4100.0
+    },
+    {
+      "id": "sales_person_lina_chavez_2024-09",
+      "type": "SalesMetric",
+      "person_id": "person_lina_chavez",
+      "month": "09",
+      "year": 2024,
+      "amount_usd": 4500.0
+    },
+    {
+      "id": "sales_person_marco_diaz_2024-07",
+      "type": "SalesMetric",
+      "person_id": "person_marco_diaz",
+      "month": "07",
+      "year": 2024,
+      "amount_usd": 3200.0
+    },
+    {
+      "id": "sales_person_marco_diaz_2024-08",
+      "type": "SalesMetric",
+      "person_id": "person_marco_diaz",
+      "month": "08",
+      "year": 2024,
+      "amount_usd": 3400.0
+    },
+    {
+      "id": "sales_person_marco_diaz_2024-09",
+      "type": "SalesMetric",
+      "person_id": "person_marco_diaz",
+      "month": "09",
+      "year": 2024,
+      "amount_usd": 3900.0
+    },
+    {
+      "id": "sales_person_priya_sharma_2024-07",
+      "type": "SalesMetric",
+      "person_id": "person_priya_sharma",
+      "month": "07",
+      "year": 2024,
+      "amount_usd": 2900.0
+    },
+    {
+      "id": "sales_person_priya_sharma_2024-08",
+      "type": "SalesMetric",
+      "person_id": "person_priya_sharma",
+      "month": "08",
+      "year": 2024,
+      "amount_usd": 3200.0
+    },
+    {
+      "id": "sales_person_priya_sharma_2024-09",
+      "type": "SalesMetric",
+      "person_id": "person_priya_sharma",
+      "month": "09",
+      "year": 2024,
+      "amount_usd": 3600.0
+    },
+    {
+      "id": "sales_person_ron_banks_2024-07",
+      "type": "SalesMetric",
+      "person_id": "person_ron_banks",
+      "month": "07",
+      "year": 2024,
+      "amount_usd": 2400.0
+    },
+    {
+      "id": "sales_person_ron_banks_2024-08",
+      "type": "SalesMetric",
+      "person_id": "person_ron_banks",
+      "month": "08",
+      "year": 2024,
+      "amount_usd": 2700.0
+    },
+    {
+      "id": "sales_person_ron_banks_2024-09",
+      "type": "SalesMetric",
+      "person_id": "person_ron_banks",
+      "month": "09",
+      "year": 2024,
+      "amount_usd": 3000.0
+    },
+    {
+      "id": "sales_person_alyssa_kent_2024-07",
+      "type": "SalesMetric",
+      "person_id": "person_alyssa_kent",
+      "month": "07",
+      "year": 2024,
+      "amount_usd": 3000.0
+    },
+    {
+      "id": "sales_person_alyssa_kent_2024-08",
+      "type": "SalesMetric",
+      "person_id": "person_alyssa_kent",
+      "month": "08",
+      "year": 2024,
+      "amount_usd": 3300.0
+    },
+    {
+      "id": "sales_person_alyssa_kent_2024-09",
+      "type": "SalesMetric",
+      "person_id": "person_alyssa_kent",
+      "month": "09",
+      "year": 2024,
+      "amount_usd": 3800.0
+    },
+    {
+      "id": "sales_person_henry_cho_2024-07",
+      "type": "SalesMetric",
+      "person_id": "person_henry_cho",
+      "month": "07",
+      "year": 2024,
+      "amount_usd": 2700.0
+    },
+    {
+      "id": "sales_person_henry_cho_2024-08",
+      "type": "SalesMetric",
+      "person_id": "person_henry_cho",
+      "month": "08",
+      "year": 2024,
+      "amount_usd": 3000.0
+    },
+    {
+      "id": "sales_person_henry_cho_2024-09",
+      "type": "SalesMetric",
+      "person_id": "person_henry_cho",
+      "month": "09",
+      "year": 2024,
+      "amount_usd": 3200.0
+    },
+    {
+      "id": "sales_person_talia_boyd_2024-07",
+      "type": "SalesMetric",
+      "person_id": "person_talia_boyd",
+      "month": "07",
+      "year": 2024,
+      "amount_usd": 1900.0
+    },
+    {
+      "id": "sales_person_talia_boyd_2024-08",
+      "type": "SalesMetric",
+      "person_id": "person_talia_boyd",
+      "month": "08",
+      "year": 2024,
+      "amount_usd": 2100.0
+    },
+    {
+      "id": "sales_person_talia_boyd_2024-09",
+      "type": "SalesMetric",
+      "person_id": "person_talia_boyd",
+      "month": "09",
+      "year": 2024,
+      "amount_usd": 2300.0
+    },
+    {
+      "id": "sales_person_jordan_fields_2024-07",
+      "type": "SalesMetric",
+      "person_id": "person_jordan_fields",
+      "month": "07",
+      "year": 2024,
+      "amount_usd": 1800.0
+    },
+    {
+      "id": "sales_person_jordan_fields_2024-08",
+      "type": "SalesMetric",
+      "person_id": "person_jordan_fields",
+      "month": "08",
+      "year": 2024,
+      "amount_usd": 2000.0
+    },
+    {
+      "id": "sales_person_jordan_fields_2024-09",
+      "type": "SalesMetric",
+      "person_id": "person_jordan_fields",
+      "month": "09",
+      "year": 2024,
+      "amount_usd": 2200.0
+    }
+  ],
+  "edges": [
+    {
+      "source": "person_rosa_martinez",
+      "target": "person_peter_tamisin",
+      "relation": "REPORTS_TO"
+    },
+    {
+      "source": "person_rosa_martinez",
+      "target": "dept_custom_builds",
+      "relation": "BELONGS_TO_DEPARTMENT"
+    },
+    {
+      "source": "person_jonas_reed",
+      "target": "person_peter_tamisin",
+      "relation": "REPORTS_TO"
+    },
+    {
+      "source": "person_jonas_reed",
+      "target": "dept_repairs",
+      "relation": "BELONGS_TO_DEPARTMENT"
+    },
+    {
+      "source": "person_samira_patel",
+      "target": "person_peter_tamisin",
+      "relation": "REPORTS_TO"
+    },
+    {
+      "source": "person_samira_patel",
+      "target": "dept_retail",
+      "relation": "BELONGS_TO_DEPARTMENT"
+    },
+    {
+      "source": "person_derek_vaughn",
+      "target": "person_rosa_martinez",
+      "relation": "REPORTS_TO"
+    },
+    {
+      "source": "person_derek_vaughn",
+      "target": "dept_custom_builds",
+      "relation": "BELONGS_TO_DEPARTMENT"
+    },
+    {
+      "source": "person_lina_chavez",
+      "target": "person_rosa_martinez",
+      "relation": "REPORTS_TO"
+    },
+    {
+      "source": "person_lina_chavez",
+      "target": "dept_custom_builds",
+      "relation": "BELONGS_TO_DEPARTMENT"
+    },
+    {
+      "source": "person_marco_diaz",
+      "target": "person_jonas_reed",
+      "relation": "REPORTS_TO"
+    },
+    {
+      "source": "person_marco_diaz",
+      "target": "dept_repairs",
+      "relation": "BELONGS_TO_DEPARTMENT"
+    },
+    {
+      "source": "person_priya_sharma",
+      "target": "person_jonas_reed",
+      "relation": "REPORTS_TO"
+    },
+    {
+      "source": "person_priya_sharma",
+      "target": "dept_repairs",
+      "relation": "BELONGS_TO_DEPARTMENT"
+    },
+    {
+      "source": "person_ron_banks",
+      "target": "person_jonas_reed",
+      "relation": "REPORTS_TO"
+    },
+    {
+      "source": "person_ron_banks",
+      "target": "dept_repairs",
+      "relation": "BELONGS_TO_DEPARTMENT"
+    },
+    {
+      "source": "person_alyssa_kent",
+      "target": "person_samira_patel",
+      "relation": "REPORTS_TO"
+    },
+    {
+      "source": "person_alyssa_kent",
+      "target": "dept_retail",
+      "relation": "BELONGS_TO_DEPARTMENT"
+    },
+    {
+      "source": "person_henry_cho",
+      "target": "person_samira_patel",
+      "relation": "REPORTS_TO"
+    },
+    {
+      "source": "person_henry_cho",
+      "target": "dept_retail",
+      "relation": "BELONGS_TO_DEPARTMENT"
+    },
+    {
+      "source": "person_talia_boyd",
+      "target": "person_samira_patel",
+      "relation": "REPORTS_TO"
+    },
+    {
+      "source": "person_talia_boyd",
+      "target": "dept_retail",
+      "relation": "BELONGS_TO_DEPARTMENT"
+    },
+    {
+      "source": "person_jordan_fields",
+      "target": "person_samira_patel",
+      "relation": "REPORTS_TO"
+    },
+    {
+      "source": "person_jordan_fields",
+      "target": "dept_retail",
+      "relation": "BELONGS_TO_DEPARTMENT"
+    },
+    {
+      "source": "person_derek_vaughn",
+      "target": "sales_person_derek_vaughn_2024-07",
+      "relation": "HAS_SALES_METRIC",
+      "metadata": {
+        "period": "2024-07"
+      }
+    },
+    {
+      "source": "person_derek_vaughn",
+      "target": "sales_person_derek_vaughn_2024-08",
+      "relation": "HAS_SALES_METRIC",
+      "metadata": {
+        "period": "2024-08"
+      }
+    },
+    {
+      "source": "person_derek_vaughn",
+      "target": "sales_person_derek_vaughn_2024-09",
+      "relation": "HAS_SALES_METRIC",
+      "metadata": {
+        "period": "2024-09"
+      }
+    },
+    {
+      "source": "person_lina_chavez",
+      "target": "sales_person_lina_chavez_2024-07",
+      "relation": "HAS_SALES_METRIC",
+      "metadata": {
+        "period": "2024-07"
+      }
+    },
+    {
+      "source": "person_lina_chavez",
+      "target": "sales_person_lina_chavez_2024-08",
+      "relation": "HAS_SALES_METRIC",
+      "metadata": {
+        "period": "2024-08"
+      }
+    },
+    {
+      "source": "person_lina_chavez",
+      "target": "sales_person_lina_chavez_2024-09",
+      "relation": "HAS_SALES_METRIC",
+      "metadata": {
+        "period": "2024-09"
+      }
+    },
+    {
+      "source": "person_marco_diaz",
+      "target": "sales_person_marco_diaz_2024-07",
+      "relation": "HAS_SALES_METRIC",
+      "metadata": {
+        "period": "2024-07"
+      }
+    },
+    {
+      "source": "person_marco_diaz",
+      "target": "sales_person_marco_diaz_2024-08",
+      "relation": "HAS_SALES_METRIC",
+      "metadata": {
+        "period": "2024-08"
+      }
+    },
+    {
+      "source": "person_marco_diaz",
+      "target": "sales_person_marco_diaz_2024-09",
+      "relation": "HAS_SALES_METRIC",
+      "metadata": {
+        "period": "2024-09"
+      }
+    },
+    {
+      "source": "person_priya_sharma",
+      "target": "sales_person_priya_sharma_2024-07",
+      "relation": "HAS_SALES_METRIC",
+      "metadata": {
+        "period": "2024-07"
+      }
+    },
+    {
+      "source": "person_priya_sharma",
+      "target": "sales_person_priya_sharma_2024-08",
+      "relation": "HAS_SALES_METRIC",
+      "metadata": {
+        "period": "2024-08"
+      }
+    },
+    {
+      "source": "person_priya_sharma",
+      "target": "sales_person_priya_sharma_2024-09",
+      "relation": "HAS_SALES_METRIC",
+      "metadata": {
+        "period": "2024-09"
+      }
+    },
+    {
+      "source": "person_ron_banks",
+      "target": "sales_person_ron_banks_2024-07",
+      "relation": "HAS_SALES_METRIC",
+      "metadata": {
+        "period": "2024-07"
+      }
+    },
+    {
+      "source": "person_ron_banks",
+      "target": "sales_person_ron_banks_2024-08",
+      "relation": "HAS_SALES_METRIC",
+      "metadata": {
+        "period": "2024-08"
+      }
+    },
+    {
+      "source": "person_ron_banks",
+      "target": "sales_person_ron_banks_2024-09",
+      "relation": "HAS_SALES_METRIC",
+      "metadata": {
+        "period": "2024-09"
+      }
+    },
+    {
+      "source": "person_alyssa_kent",
+      "target": "sales_person_alyssa_kent_2024-07",
+      "relation": "HAS_SALES_METRIC",
+      "metadata": {
+        "period": "2024-07"
+      }
+    },
+    {
+      "source": "person_alyssa_kent",
+      "target": "sales_person_alyssa_kent_2024-08",
+      "relation": "HAS_SALES_METRIC",
+      "metadata": {
+        "period": "2024-08"
+      }
+    },
+    {
+      "source": "person_alyssa_kent",
+      "target": "sales_person_alyssa_kent_2024-09",
+      "relation": "HAS_SALES_METRIC",
+      "metadata": {
+        "period": "2024-09"
+      }
+    },
+    {
+      "source": "person_henry_cho",
+      "target": "sales_person_henry_cho_2024-07",
+      "relation": "HAS_SALES_METRIC",
+      "metadata": {
+        "period": "2024-07"
+      }
+    },
+    {
+      "source": "person_henry_cho",
+      "target": "sales_person_henry_cho_2024-08",
+      "relation": "HAS_SALES_METRIC",
+      "metadata": {
+        "period": "2024-08"
+      }
+    },
+    {
+      "source": "person_henry_cho",
+      "target": "sales_person_henry_cho_2024-09",
+      "relation": "HAS_SALES_METRIC",
+      "metadata": {
+        "period": "2024-09"
+      }
+    },
+    {
+      "source": "person_talia_boyd",
+      "target": "sales_person_talia_boyd_2024-07",
+      "relation": "HAS_SALES_METRIC",
+      "metadata": {
+        "period": "2024-07"
+      }
+    },
+    {
+      "source": "person_talia_boyd",
+      "target": "sales_person_talia_boyd_2024-08",
+      "relation": "HAS_SALES_METRIC",
+      "metadata": {
+        "period": "2024-08"
+      }
+    },
+    {
+      "source": "person_talia_boyd",
+      "target": "sales_person_talia_boyd_2024-09",
+      "relation": "HAS_SALES_METRIC",
+      "metadata": {
+        "period": "2024-09"
+      }
+    },
+    {
+      "source": "person_jordan_fields",
+      "target": "sales_person_jordan_fields_2024-07",
+      "relation": "HAS_SALES_METRIC",
+      "metadata": {
+        "period": "2024-07"
+      }
+    },
+    {
+      "source": "person_jordan_fields",
+      "target": "sales_person_jordan_fields_2024-08",
+      "relation": "HAS_SALES_METRIC",
+      "metadata": {
+        "period": "2024-08"
+      }
+    },
+    {
+      "source": "person_jordan_fields",
+      "target": "sales_person_jordan_fields_2024-09",
+      "relation": "HAS_SALES_METRIC",
+      "metadata": {
+        "period": "2024-09"
+      }
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+[
+  { "person_id": "person_derek_vaughn", "year": 2024, "month": "07", "amount_usd": 4200 },
+  { "person_id": "person_derek_vaughn", "year": 2024, "month": "08", "amount_usd": 4900 },
+  { "person_id": "person_derek_vaughn", "year": 2024, "month": "09", "amount_usd": 5300 },
+
+  { "person_id": "person_lina_chavez", "year": 2024, "month": "07", "amount_usd": 3800 },
+  { "person_id": "person_lina_chavez", "year": 2024, "month": "08", "amount_usd": 4100 },
+  { "person_id": "person_lina_chavez", "year": 2024, "month": "09", "amount_usd": 4500 },
+
+  { "person_id": "person_marco_diaz", "year": 2024, "month": "07", "amount_usd": 3200 },
+  { "person_id": "person_marco_diaz", "year": 2024, "month": "08", "amount_usd": 3400 },
+  { "person_id": "person_marco_diaz", "year": 2024, "month": "09", "amount_usd": 3900 },
+
+  { "person_id": "person_priya_sharma", "year": 2024, "month": "07", "amount_usd": 2900 },
+  { "person_id": "person_priya_sharma", "year": 2024, "month": "08", "amount_usd": 3200 },
+  { "person_id": "person_priya_sharma", "year": 2024, "month": "09", "amount_usd": 3600 },
+
+  { "person_id": "person_ron_banks", "year": 2024, "month": "07", "amount_usd": 2400 },
+  { "person_id": "person_ron_banks", "year": 2024, "month": "08", "amount_usd": 2700 },
+  { "person_id": "person_ron_banks", "year": 2024, "month": "09", "amount_usd": 3000 },
+
+  { "person_id": "person_alyssa_kent", "year": 2024, "month": "07", "amount_usd": 3000 },
+  { "person_id": "person_alyssa_kent", "year": 2024, "month": "08", "amount_usd": 3300 },
+  { "person_id": "person_alyssa_kent", "year": 2024, "month": "09", "amount_usd": 3800 },
+
+  { "person_id": "person_henry_cho", "year": 2024, "month": "07", "amount_usd": 2700 },
+  { "person_id": "person_henry_cho", "year": 2024, "month": "08", "amount_usd": 3000 },
+  { "person_id": "person_henry_cho", "year": 2024, "month": "09", "amount_usd": 3200 },
+
+  { "person_id": "person_talia_boyd", "year": 2024, "month": "07", "amount_usd": 1900 },
+  { "person_id": "person_talia_boyd", "year": 2024, "month": "08", "amount_usd": 2100 },
+  { "person_id": "person_talia_boyd", "year": 2024, "month": "09", "amount_usd": 2300 },
+
+  { "person_id": "person_jordan_fields", "year": 2024, "month": "07", "amount_usd": 1800 },
+  { "person_id": "person_jordan_fields", "year": 2024, "month": "08", "amount_usd": 2000 },
+  { "person_id": "person_jordan_fields", "year": 2024, "month": "09", "amount_usd": 2200 }
+]

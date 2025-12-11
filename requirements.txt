@@ -17,8 +17,12 @@ openai
 # PDF loader
 pypdf
 
+
 # Vector DB
 faiss-cpu
+
+# Graph processing
+networkx
 
 # BM25 Retrieve
 rank_bm25

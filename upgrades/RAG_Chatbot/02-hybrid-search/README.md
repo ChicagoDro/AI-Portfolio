@@ -56,35 +56,35 @@ This upgrade implements:
 
 ```
                           ┌────────────────────┐
-                          │   User Query        │
+                          │   User Query       │
                           └─────────┬──────────┘
                                     │
              ┌──────────────────────┼─────────────────────────┐
              │                      │                         │
              ▼                      ▼                         ▼
-    ┌────────────────┐     ┌───────────────────┐     ┌─────────────────────┐
-    │Classifier (LCEL)│     │FAISS Vector Store │     │BM25 Keyword Search  │
-    └────────────────┘     └─────────┬─────────┘     └─────────┬──────────┘
-                                     │                           │
-                                     ▼                           ▼
-                         ┌──────────────────┐      ┌─────────────────────┐
-                         │ Dense Candidates │      │ Sparse Candidates    │
-                         └─────────┬────────┘      └─────────┬──────────┘
+    ┌────────────────┐     ┌───────────────────┐     ┌────────────────────┐
+    │Classifier(LCEL)│     │FAISS Vector Store │     │BM25 Keyword Search │
+    └────────────────┘     └─────────┬─────────┘     └─────────┬────────-─┘
+                                     │                         │
+                                     ▼                         ▼
+                         ┌──────────────────┐      ┌───────────────────┐
+                         │ Dense Candidates │      │ Sparse Candidates │
+                         └─────────┬────────┘      └─────────┬─────────┘
                                    │                         │
                                    ▼                         ▼
                              Score Normalization        Score Normalization
                                    │                         │
                                    └──────────┬──────────────┘
                                               ▼
-                                  Weighted Hybrid Fusion
+                                   Weighted Hybrid Fusion
                                               ▼
-                                      Ranked Results
+                                       Ranked Results
                                               ▼
-                                      Context Builder
+                                       Context Builder
                                               ▼
-                                           LLM
+                                             LLM
                                               ▼
-                                  Answer + Provenance
+                                     Answer + Provenance
 ```
 
 ---

@@ -1,0 +1,14 @@
+[
+  {
+    "id": "dept_custom_builds",
+    "name": "Custom Builds"
+  },
+  {
+    "id": "dept_repairs",
+    "name": "Repairs"
+  },
+  {
+    "id": "dept_retail",
+    "name": "Retail & Merch"
+  }
+]

@@ -1,0 +1,96 @@
+[
+  {
+    "id": "person_peter_tamisin",
+    "name": "Peter \"Lil Dro\" Tamisin",
+    "role": "CEO",
+    "department_id": null,
+    "manager_id": null
+  },
+  {
+    "id": "person_rosa_martinez",
+    "name": "Rosa Martinez",
+    "role": "Director of Custom Builds",
+    "department_id": "dept_custom_builds",
+    "manager_id": "person_peter_tamisin"
+  },
+  {
+    "id": "person_jonas_reed",
+    "name": "Jonas Reed",
+    "role": "Director of Repairs",
+    "department_id": "dept_repairs",
+    "manager_id": "person_peter_tamisin"
+  },
+  {
+    "id": "person_samira_patel",
+    "name": "Samira Patel",
+    "role": "Director of Retail & Merch",
+    "department_id": "dept_retail",
+    "manager_id": "person_peter_tamisin"
+  },
+
+  {
+    "id": "person_derek_vaughn",
+    "name": "Derek Vaughn",
+    "role": "Senior Fabricator",
+    "department_id": "dept_custom_builds",
+    "manager_id": "person_rosa_martinez"
+  },
+  {
+    "id": "person_lina_chavez",
+    "name": "Lina Chavez",
+    "role": "Frame Builder",
+    "department_id": "dept_custom_builds",
+    "manager_id": "person_rosa_martinez"
+  },
+
+  {
+    "id": "person_marco_diaz",
+    "name": "Marco Diaz",
+    "role": "Lead Mechanic",
+    "department_id": "dept_repairs",
+    "manager_id": "person_jonas_reed"
+  },
+  {
+    "id": "person_priya_sharma",
+    "name": "Priya Sharma",
+    "role": "Mechanic",
+    "department_id": "dept_repairs",
+    "manager_id": "person_jonas_reed"
+  },
+  {
+    "id": "person_ron_banks",
+    "name": "Ron Banks",
+    "role": "Mechanic",
+    "department_id": "dept_repairs",
+    "manager_id": "person_jonas_reed"
+  },
+
+  {
+    "id": "person_alyssa_kent",
+    "name": "Alyssa Kent",
+    "role": "Sales Associate",
+    "department_id": "dept_retail",
+    "manager_id": "person_samira_patel"
+  },
+  {
+    "id": "person_henry_cho",
+    "name": "Henry Cho",
+    "role": "Sales Associate",
+    "department_id": "dept_retail",
+    "manager_id": "person_samira_patel"
+  },
+  {
+    "id": "person_talia_boyd",
+    "name": "Talia Boyd",
+    "role": "Customer Support",
+    "department_id": "dept_retail",
+    "manager_id": "person_samira_patel"
+  },
+  {
+    "id": "person_jordan_fields",
+    "name": "Jordan Fields",
+    "role": "Customer Support",
+    "department_id": "dept_retail",
+    "manager_id": "person_samira_patel"
+  }
+]
