@@ -38,7 +38,7 @@ DATA_DIR = PROJECT_ROOT / "data" / "Chitown_Custom_Choppers" / "company_docs"
 PROVIDER = os.getenv("LLM_PROVIDER", "openai").lower()
 
 # Directory where FAISS index is saved/loaded (provider-specific)
-INDEX_DIR = PROJECT_ROOT / "indices" / "Chitown_Custom_Choppers" / f"faiss_chitowncustomchoppers_index_{PROVIDER}"
+INDEX_DIR = PROJECT_ROOT / "indices" / f"faiss_chitowncustomchoppers_index_{PROVIDER}"
 INDEX_DIR.mkdir(parents=True, exist_ok=True)
 
 

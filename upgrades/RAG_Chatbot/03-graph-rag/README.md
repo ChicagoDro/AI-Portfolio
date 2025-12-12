@@ -35,7 +35,7 @@ New file:
 
 ```
 
-src/Chitown_Custom_Choppers_RAG_Chatbot/graph_kg_builder.py
+src/RAG_Chatbot/graph_kg_builder.py
 
 ```
 
@@ -60,7 +60,7 @@ New file:
 
 ```
 
-src/Chitown_Custom_Choppers_RAG_Chatbot/graph_retrieval.py
+src/RAG_Chatbot/graph_retrieval.py
 
 ```
 
@@ -90,7 +90,7 @@ In:
 
 ```
 
-src/Chitown_Custom_Choppers_RAG_Chatbot/chitown_custom_choppers_chatbot.py
+src/RAG_Chatbot/chitown_custom_choppers_chatbot.py
 
 ````
 
