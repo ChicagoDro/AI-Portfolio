@@ -1,5 +1,5 @@
 def main():
-    print("Hello from rag-capstone!")
+    print("Hello from rag-chatbot!")
 
 
 if __name__ == "__main__":

@@ -102,7 +102,7 @@ AI-Portfolio/
 ├── .python-version               # Python version used locally
 ├── main.py                       # (optional entrypoint / orchestration)
 ├── src/
-│   └── RAG_Chatbot/
+│   └── Chitown_Custom_Choppers_RAG_Chatbot/
 │       ├── ingest_embed_index.py         # Build vector + graph indices from data/
 │       ├── chitown_custom_choppers_chatbot.py  # Main chatbot / Streamlit app
 │       ├── graph_kg_builder.py          # Knowledge graph construction (GraphRAG)
@@ -116,7 +116,7 @@ AI-Portfolio/
 │   └── faiss_chitowncustomchoppers_index_{LLM} /  # Generated vector + graph indices
 ├── notebooks/                           # Scratch space / experiments
 └── upgrades/
-    └── RAG_Chatbot/
+    └── Chitown_Custom_Choppers_RAG_Chatbot/
         ├── 01-citations-and-provenance/
         ├── 02-hybrid-search/
         ├── 03-graph-rag/
@@ -243,7 +243,7 @@ From the repo root:
 
 ```bash
 # run the ingestion + embedding pipeline
-python src/RAG_Chatbot/ingest_embed_index.py
+python src/Chitown_Custom_Choppers_RAG_Chatbot/ingest_embed_index.py
 ```
 
 This will:
@@ -269,7 +269,7 @@ Once your environment is configured and indices are built, you have two main way
 From the repo root:
 
 ```bash
-streamlit run src/RAG_Chatbot/chitown_custom_choppers_chatbot.py
+streamlit run src/Chitown_Custom_Choppers_RAG_Chatbot/chitown_custom_choppers_chatbot.py
 ```
 
 Then open the URL printed in the console (typically `http://localhost:8501`) and:
@@ -283,7 +283,7 @@ Then open the URL printed in the console (typically `http://localhost:8501`) and
 
 ## 7. Learning Roadmap (Progressive Upgrades)
 
-The `upgrades/RAG_Chatbot` directory documents your **learning journey**:
+The `upgrades/Chitown_Custom_Choppers_RAG_Chatbot` directory documents your **learning journey**:
 
 1. **Upgrade 1 – Citations & Provenance**
 

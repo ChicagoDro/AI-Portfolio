@@ -35,7 +35,7 @@ from langchain_google_genai import (
 
 
 # --- GraphRAG utilities ---
-from src.RAG_Chatbot.graph_retrieval import (
+from src.Chitown_Custom_Choppers_RAG_Chatbot.graph_retrieval import (
     load_graph,
     list_people,
     format_org_summary,
@@ -54,7 +54,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 # Directory where FAISS index is saved/loaded
 PROVIDER = os.getenv("LLM_PROVIDER", "openai").lower()
-INDEX_DIR = PROJECT_ROOT / "indices" / f"faiss_chitowncustomchoppers_index_{PROVIDER}"
+INDEX_DIR = PROJECT_ROOT / "indices" / "Chitown_Custom_Choppers" / f"faiss_chitowncustomchoppers_index_{PROVIDER}"
 
 
 # ----------------------------- LLM FACTORY ----------------------------------------
