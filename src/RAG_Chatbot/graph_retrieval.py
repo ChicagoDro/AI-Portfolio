@@ -33,7 +33,7 @@ import networkx as nx
 # --------------------------------------------------------------------------------------
 
 # This file lives at: src/RAG_Chatbot/graph_retrieval.py
-# Project root: AI-Portfolio/
+# Project root: ML_AI_Progressive_Training/
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 GRAPH_DIR = PROJECT_ROOT / "data" / "Chitown_Custom_Choppers" /"graph"

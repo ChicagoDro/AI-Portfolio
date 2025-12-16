@@ -28,7 +28,7 @@ from typing import Dict, Any, List
 # --------------------------------------------------------------------------------------
 
 # This file lives at: src/RAG_Chatbot/graph_kg_builder.py
-# Project root: AI-Portfolio/
+# Project root: ML_AI_Progressive_Training/
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 GRAPH_DIR = PROJECT_ROOT / "data" / "Chitown_Custom_Choppers"/ "graph"

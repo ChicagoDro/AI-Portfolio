@@ -1,6 +1,6 @@
-# AI Portfolio – Chi-Town Custom Choppers RAG Lab
+# ML/ AI Progressive Training – Chi-Town Custom Choppers ML/AI Labs
 
-A practical GenAI portfolio project showcasing **real-world retrieval architectures**:
+A practical GenAI/ ML Progressive Training project showcasing **real-world retrieval architectures**:
 
 - Classic **vector RAG**
 - **Hybrid** dense + BM25 retrieval
@@ -95,7 +95,7 @@ The core chatbot uses multiple retrieval modes:
 ## 3. Repository Layout
 
 ```text
-AI-Portfolio/
+ML_AI_Progressive_Training/
 ├── README.md                     # ← You are here
 ├── requirements.txt
 ├── .env.example                  # sample environment variables (.env is gitignored)
@@ -180,8 +180,8 @@ We use these to **tell the story** of how the system evolved, and to teach other
 ### 4.2 Clone the Repo
 
 ```bash
-git clone https://github.com/ChicagoDro/AI-Portfolio.git
-cd AI-Portfolio
+git clone https://github.com/ChicagoDro/ML_AI_Progressive_Training.git
+cd ML_AI_Progressive_Training
 ```
 
 ### 4.3 Create and Activate a Virtual Env
@@ -345,6 +345,6 @@ Based in Chicago, IL.
 
 ---
 
-Feel free to fork, explore, and adapt this project for your own AI portfolio.
+Feel free to fork, explore, and adapt this project for your own ML/ AI Progressive Training.
 
 Welcome to **Chi-Town Custom Choppers** – where retrieval meets craftsmanship.
